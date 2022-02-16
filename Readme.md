@@ -1,4 +1,4 @@
 ## Architecture
-- See [CONTRIBUTING.md](architecture/blob/master/README.md)
+- See [CONTRIBUTING.md](https://github.com/klovercloud-ci-cd/architecture/blob/master/README.md)
 ## Installation guide
 ## Getting started
