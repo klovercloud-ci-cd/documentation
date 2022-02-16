@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: klovercloud-ci-core
+  namespace: klovercloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: klovercloud-ci-core
+  template:
+    metadata:
+      labels:
+        app: klovercloud-ci-core
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: app
+          imagePullPolicy: Always
+          image: quay.io/klovercloud/ci-core:v1.0.0
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 100m
+              memory: 256Mi
+          envFrom:
+            - configMapRef:
+                name: klovercloud-ci-core-envar-config
+            - secretRef:
+                name: klovercloud-ci-core-mongo-secret
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      serviceAccountName: klovercloud-ci-core-sa
