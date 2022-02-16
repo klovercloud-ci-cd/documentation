@@ -1,15 +1,16 @@
 #!/bin/sh
+
 read -p "Enter mongo server:" mongo_server
 read -p "Enter mongo port:" mongo_port
 
 
 # deploying event-bank
-kubectl apply -f ../event-bank/k8s/namespace.yaml
-sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" ../event-bank/k8s/configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" ../event-bank/k8s/configmap.yaml
-kubectl apply -f ../event-bank/k8s/configmap.yaml
-kubectl apply -f ../event-bank/k8s/mongo-secret.yaml
-kubectl apply -f ../event-bank/k8s/deployment.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/1.namespace.yaml
+sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/2.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/2.configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/2.configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/3.mongo-secret.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/4.deployment.yaml
 
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
@@ -21,12 +22,12 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../event-bank/k8s/service.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/18.service.yaml
 
 
 # deploying api-service
-kubectl apply -f ../api-service/k8s/configmap.yaml
-kubectl apply -f ../api-service/k8s/deployment.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/5.configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/6.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -37,15 +38,15 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../api-service/k8s/service.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/19.service.yaml
 
 
 # deploying klovercloud-ci-integration-manager
-sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" ../klovercloud-ci-integration-manager/k8s/configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" ../klovercloud-ci-integration-manager/k8s/configmap.yaml
-kubectl apply -f ../klovercloud-ci-integration-manager/k8s/configmap.yaml
-kubectl apply -f ../klovercloud-ci-integration-manager/k8s/mongo-secret.yaml
-kubectl apply -f ../klovercloud-ci-integration-manager/k8s/deployment.yaml
+sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/7.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/7.configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/7.configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/8.mongo-secret.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/9.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -56,18 +57,18 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../klovercloud-ci-integration-manager/k8s/service.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/20.service.yaml
 
 
 # deploying ci-core
-kubectl apply -f ../klovercloud-ci-core/k8s/cluster-role.yaml
-kubectl apply -f ../klovercloud-ci-core/k8s/service-account.yaml
-kubectl apply -f ../klovercloud-ci-core/k8s/cluster-rolebinding.yaml
-sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" ../klovercloud-ci-core/k8s/configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" ../klovercloud-ci-core/k8s/configmap.yaml
-kubectl apply -f ../klovercloud-ci-core/k8s/configmap.yaml
-kubectl apply -f ../klovercloud-ci-core/k8s/mongo-secret.yaml
-kubectl apply -f ../klovercloud-ci-core/k8s/deployment.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/permissions/1.%20cluster-role.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/permissions/2.service-account.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/permissions/3.cluster-rolebinding.yaml
+sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/10.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/10.configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/10.configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/11.mongo-secret.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/12.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -78,14 +79,14 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../klovercloud-ci-core/k8s/service.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/21.service.yaml
 
 # deploying ci-agent
-kubectl apply -f ../klovercloud-ci-agent/k8s/cluster-role.yaml
-kubectl apply -f ../klovercloud-ci-agent/k8s/service-account.yaml
-kubectl apply -f ../klovercloud-ci-agent/k8s/cluster-rolebinding.yaml
-kubectl apply -f ../klovercloud-ci-agent/k8s/configmap.yaml
-kubectl apply -f ../klovercloud-ci-agent/k8s/deployment.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/permissions/4.cluster-role.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/permissions/5.service-account.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/permissions/6.cluster-rolebinding.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/13.configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/14.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -96,16 +97,16 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../klovercloud-ci-agent/k8s/service.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/22.service.yaml
 
 
 # deploying security
-sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" ../security/k8s/configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" ../security/k8s/configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/15.configmap.yml
+sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/15.configmap.yml
 
-kubectl apply -f ../security/k8s/configmap.yaml
-kubectl apply -f ../security/k8s/mongo-secret.yaml
-kubectl apply -f ../security/k8s/deployment.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/15.configmap.yml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/16.mongo-secret.yml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/17.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -116,7 +117,7 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../security/k8s/service.yaml
+kubectl apply -f https://raw.githubusercontent.com/klovercloud-ci-cd/documentation/main/files/k8s/descriptors/23.service.yaml
 
 kubectl get pods -n klovercloud
 
