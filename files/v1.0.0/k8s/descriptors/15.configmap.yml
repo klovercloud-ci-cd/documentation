@@ -5,8 +5,8 @@ metadata:
   namespace: klovercloud
 data:
   RUN_MODE: "PRODUCTION"
-  MONGO_SERVER:  "116.202.169.133"
-  MONGO_PORT: "27042"
+  MONGO_SERVER: "localhost"
+  MONGO_PORT: "27017"
   DATABASE_NAME: "klovercloud-security-production"
   SERVER_PORT: "8080"
   DATABASE: "MONGO"

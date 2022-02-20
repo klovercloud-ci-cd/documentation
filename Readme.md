@@ -10,4 +10,22 @@ To run generate.sh script:
 ```couchbasequery
 bash generate.sh
 ```
+After run the script have to provide mongo server url and port.
+
+```Example:
+Enter mongo server:"loaclhost"
+Enter mongo port:"27017"
+```
+
+Also need to provide database username and password.
+
+```Example:
+Enter mongo username:"username"
+Enter mongo password:"password"
+```
+After successfully run the script you will get an output as below.
+
+![context](files/ss1.png)
+
+
 ## Getting started

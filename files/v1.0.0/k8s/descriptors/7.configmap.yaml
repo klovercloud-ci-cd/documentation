@@ -6,8 +6,8 @@ metadata:
 data:
   RUN_MODE: "PRODUCTION"
   SERVER_PORT: "8080"
-  MONGO_SERVER: "116.202.169.133"
-  MONGO_PORT: "27042"
+  MONGO_SERVER: "localhost"
+  MONGO_PORT: "27017"
   DATABASE_NAME: "klovercloud-ci-integration-manager-production"
   DATABASE: "MONGO"
   DEFAULT_PER_DAY_TOTAL_PROCESS: "10"
