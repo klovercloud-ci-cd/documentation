@@ -6,10 +6,13 @@ To clone the repository, run the following command:
 ```couchbasequery
 $ git clone https://github.com/klovercloud-ci-cd/documentation.git
 ```
-
-To run generate.sh script:
+To set your required version:
 ```couchbasequery
-bash files/{{yourVersion}}/scripts/generate.sh
+$ export KLOVERCLOUD_CI_VERSION=v1.0.0
+```
+To install klovercloud-ci:
+```couchbasequery
+./files/{$KLOVERCLOUD_CI_VERSION}/scripts/generate.sh
 ```
 After run the script have to provide mongo server url and port.
 
