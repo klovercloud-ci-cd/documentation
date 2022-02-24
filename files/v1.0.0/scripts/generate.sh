@@ -32,14 +32,14 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
 done
 
 # deploying event-bank
-kubectl apply -f ../k8s/descriptors/1.namespace.yaml
-sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" ../k8s/descriptors/2.configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" ../k8s/descriptors/2.configmap.yaml
-kubectl apply -f ../k8s/descriptors/2.configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_USERNAME: \).*/s//\1$mongo_username/" ../k8s/descriptors/3.mongo-secret.yaml
-sed -i "/^\([[:space:]]*MONGO_PASSWORD: \).*/s//\1$mongo_password/" ../k8s/descriptors/3.mongo-secret.yaml
-kubectl apply -f ../k8s/descriptors/3.mongo-secret.yaml
-kubectl apply -f ../k8s/descriptors/4.deployment.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/1.namespace.yaml
+sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" files/v1.0.0/k8s/descriptors/2.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" files/v1.0.0/k8s/descriptors/2.configmap.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/2.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_USERNAME: \).*/s//\1$mongo_username/" files/v1.0.0/k8s/descriptors/3.mongo-secret.yaml
+sed -i "/^\([[:space:]]*MONGO_PASSWORD: \).*/s//\1$mongo_password/" files/v1.0.0/k8s/descriptors/3.mongo-secret.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/3.mongo-secret.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/4.deployment.yaml
 
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
@@ -51,12 +51,12 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../k8s/descriptors/18.service.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/18.service.yaml
 
 
 # deploying api-service
-kubectl apply -f ../k8s/descriptors/5.configmap.yaml
-kubectl apply -f ../k8s/descriptors/6.deployment.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/5.configmap.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/6.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -67,17 +67,17 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../k8s/descriptors/19.service.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/19.service.yaml
 
 
 # deploying klovercloud-ci-integration-manager
-sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" ../k8s/descriptors/7.configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" ../k8s/descriptors/7.configmap.yaml
-kubectl apply -f ../k8s/descriptors/7.configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_USERNAME: \).*/s//\1$mongo_username/" ../k8s/descriptors/8.mongo-secret.yaml
-sed -i "/^\([[:space:]]*MONGO_PASSWORD: \).*/s//\1$mongo_password/" ../k8s/descriptors/8.mongo-secret.yaml
-kubectl apply -f ../k8s/descriptors/8.mongo-secret.yaml
-kubectl apply -f ../k8s/descriptors/9.deployment.yaml
+sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" files/v1.0.0/k8s/descriptors/7.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" files/v1.0.0/k8s/descriptors/7.configmap.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/7.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_USERNAME: \).*/s//\1$mongo_username/" files/v1.0.0/k8s/descriptors/8.mongo-secret.yaml
+sed -i "/^\([[:space:]]*MONGO_PASSWORD: \).*/s//\1$mongo_password/" files/v1.0.0/k8s/descriptors/8.mongo-secret.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/8.mongo-secret.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/9.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -88,20 +88,20 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../k8s/descriptors/20.service.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/20.service.yaml
 
 
 # deploying ci-core
-kubectl apply -f ../k8s/rbac/1.%20cluster-role.yaml
-kubectl apply -f ../k8s/rbac/2.service-account.yaml
-kubectl apply -f ../k8s/rbac/3.cluster-rolebinding.yaml
-sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" ../k8s/descriptors/10.configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" ../k8s/descriptors/10.configmap.yaml
-kubectl apply -f ../k8s/descriptors/10.configmap.yaml
-sed -i "/^\([[:space:]]*MONGO_USERNAME: \).*/s//\1$mongo_username/" ../k8s/descriptors/11.mongo-secret.yaml
-sed -i "/^\([[:space:]]*MONGO_PASSWORD: \).*/s//\1$mongo_password/" ../k8s/descriptors/11.mongo-secret.yaml
-kubectl apply -f ../k8s/descriptors/11.mongo-secret.yaml
-kubectl apply -f ../k8s/descriptors/12.deployment.yaml
+kubectl apply -f files/v1.0.0/k8s/rbac/1.cluster-role.yaml
+kubectl apply -f files/v1.0.0/k8s/rbac/2.service-account.yaml
+kubectl apply -f files/v1.0.0/k8s/rbac/3.cluster-rolebinding.yaml
+sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" files/v1.0.0/k8s/descriptors/10.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" files/v1.0.0/k8s/descriptors/10.configmap.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/10.configmap.yaml
+sed -i "/^\([[:space:]]*MONGO_USERNAME: \).*/s//\1$mongo_username/" files/v1.0.0/k8s/descriptors/11.mongo-secret.yaml
+sed -i "/^\([[:space:]]*MONGO_PASSWORD: \).*/s//\1$mongo_password/" files/v1.0.0/k8s/descriptors/11.mongo-secret.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/11.mongo-secret.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/12.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -112,14 +112,14 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../k8s/descriptors/21.service.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/21.service.yaml
 
 # deploying ci-agent
-kubectl apply -f ../k8s/rbac/4.cluster-role.yaml
-kubectl apply -f ../k8s/rbac/5.service-account.yaml
-kubectl apply -f ../k8s/rbac/6.cluster-rolebinding.yaml
-kubectl apply -f ../k8s/descriptors/13.configmap.yaml
-kubectl apply -f ../k8s/descriptors/14.deployment.yaml
+kubectl apply -f files/v1.0.0/k8s/rbac/4.cluster-role.yaml
+kubectl apply -f files/v1.0.0/k8s/rbac/5.service-account.yaml
+kubectl apply -f files/v1.0.0/k8s/rbac/6.cluster-rolebinding.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/13.configmap.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/14.deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -130,17 +130,17 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-kubectl apply -f ../k8s/descriptors/22.service.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/22.service.yaml
 
 
 # deploying security
-sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" ../k8s/descriptors/15.configmap.yml
-sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" ../k8s/descriptors/15.configmap.yml
-kubectl apply -f ../k8s/descriptors/15.configmap.yml
-sed -i "/^\([[:space:]]*MONGO_USERNAME: \).*/s//\1$mongo_username/" ../k8s/descriptors/16.mongo-secret.yml
-sed -i "/^\([[:space:]]*MONGO_PASSWORD: \).*/s//\1$mongo_password/" ../k8s/descriptors/16.mongo-secret.yml
-kubectl apply -f ../k8s/descriptors/16.mongo-secret.yml
-kubectl apply -f ../k8s/descriptors/17.deployment.yaml
+sed -i "/^\([[:space:]]*MONGO_SERVER: \).*/s//\1$mongo_server/" files/v1.0.0/k8s/descriptors/15.configmap.yml
+sed -i "/^\([[:space:]]*MONGO_PORT: \).*/s//\1$mongo_port/" files/v1.0.0/k8s/descriptors/15.configmap.yml
+kubectl apply -f files/v1.0.0/k8s/descriptors/15.configmap.yml
+sed -i "/^\([[:space:]]*MONGO_USERNAME: \).*/s//\1$mongo_username/" files/v1.0.0/k8s/descriptors/16.mongo-secret.yml
+sed -i "/^\([[:space:]]*MONGO_PASSWORD: \).*/s//\1$mongo_password/" files/v1.0.0/k8s/descriptors/16.mongo-secret.yml
+kubectl apply -f files/v1.0.0/k8s/descriptors/16.mongo-secret.yml
+kubectl apply -f files/v1.0.0/k8s/descriptors/17.deployment.yaml
 
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
@@ -153,6 +153,6 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   sleep 5
 done
 
-kubectl apply -f ../k8s/descriptors/23.service.yaml
+kubectl apply -f files/v1.0.0/k8s/descriptors/23.service.yaml
 
 kubectl get pods -n klovercloud
