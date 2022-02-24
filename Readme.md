@@ -34,7 +34,7 @@ kubectl get pods -n klovercloud
 ```
 Example of a successful installation: 
 
-![context](files/ss1.png)
+![context](files/images/deployStatusExample.png)
 
 
 ## Getting started
