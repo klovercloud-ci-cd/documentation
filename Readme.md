@@ -38,5 +38,16 @@ Example of a successful installation:
 
 
 ## Getting started
+### Prerequisites:
+- [Ctl Installation](https://github.com/klovercloud-ci-cd/ctl)
+
+Login:
+```couchbasequery
+ctl login
+```
+Repository Append:
+```couchbasequery
+ctl update repos file={file_path} option=append
+```
 
 Please follow [this](https://github.com/klovercloud-ci-cd/ctl) guide.
