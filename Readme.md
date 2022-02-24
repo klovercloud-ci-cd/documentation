@@ -38,3 +38,5 @@ Example of a successful installation:
 
 
 ## Getting started
+
+-  Please follow [this](https://github.com/klovercloud-ci-cd/ctl).
