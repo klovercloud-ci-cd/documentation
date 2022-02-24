@@ -12,7 +12,7 @@ export KLOVERCLOUD_CI_VERSION=v1.0.0
 ```
 Install klovercloud-ci:
 ```couchbasequery
-./files/{$KLOVERCLOUD_CI_VERSION}/scripts/generate.sh
+./files/$KLOVERCLOUD_CI_VERSION/scripts/generate.sh
 ```
 Provide mongo server url and port.
 
