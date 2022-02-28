@@ -44,7 +44,13 @@ Set env:
 ```couchbasequery
 cd ~/
 mkdir klovercloud
+```
+Export: 
+```couchbasequery
+vi ~/.bashrc
+#add the following line and save
 export KCPATH=$HOME/klovercloud/
+source ~/.bashrc
 ```
 - Windows:
 Create klovercloud directory inside c drive
