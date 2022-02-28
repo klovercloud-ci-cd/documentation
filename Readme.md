@@ -7,13 +7,13 @@ Clone:
 git clone https://github.com/klovercloud-ci-cd/documentation.git
 ```
 Set env:
--Linux:
+- Linux:
 ```couchbasequery
 cd ~/
 mkdir klovercloud
 export KCPATH=$HOME/klovercloud/
 ```
--Windows:
+- Windows:
 Create klovercloud directory inside c drive
 ```couchbasequery
 SET KCPATH=C:\klovercloud\
