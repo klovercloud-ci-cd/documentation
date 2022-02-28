@@ -154,13 +154,7 @@ File Example:
             "_metadata": {
                 "name": "test1"
             },
-            "url": "https://bitbucket.org/shabrulislam2451/testapp/src/master/"
-        },
-        {
-            "_metadata": {
-                "name": "test2"
-            },
-            "url": "https://bitbucket.org/shabrulislam2451/testapp/src/master/"
+            "url": "https://github.com/shabrul2451/testApp"
         }
     ]
 }
