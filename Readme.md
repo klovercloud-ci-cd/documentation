@@ -6,6 +6,19 @@ Clone:
 ```couchbasequery
 git clone https://github.com/klovercloud-ci-cd/documentation.git
 ```
+Set env:
+Linux:
+```couchbasequery
+cd ~/
+mkdir klovercloud
+export KCPATH=$HOME/klovercloud/
+```
+Windows:
+Create klovercloud directory inside c drive
+```couchbasequery
+SET KCPATH=C:\klovercloud\
+```
+[N:B:] in case of windows please restart.
 Set required version:
 ```couchbasequery
 export KLOVERCLOUD_CI_VERSION=v1.0.0
