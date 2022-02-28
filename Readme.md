@@ -67,7 +67,7 @@ Use "ctl [command] --help" for more information about a command.
 ```
 Admin Registration using json or yaml file:
 ```couchbasequery
-ctl register file={file_name}.json
+ctl register file={file}
 ```
 File Example:
 ```couchbasequery
@@ -114,6 +114,41 @@ File Example:
     }
   ]
 }
+```
+Application Append:
+```couchbasequery
+ctl update apps file={file} option=APPEND_APPLICATION
+```
+File Example:
+```couchbasequery
+{
+     "applications": [
+        {
+            "_metadata": {
+                "name": "test1"
+            },
+            "url": "https://bitbucket.org/shabrulislam2451/testapp/src/master/"
+        },
+        {
+            "_metadata": {
+                "name": "test2"
+            },
+            "url": "https://bitbucket.org/shabrulislam2451/testapp/src/master/"
+        }
+    ]
+}
+```
+Check [this](https://github.com/klovercloud-ci-cd/core-engine/blob/master/markdownfiles/tutorial-v1.0.0.md) pipeline example.
+
+Every update to the repository will trigger the pipeline attached.
+
+Process list of an application:
+```couchbasequery
+ctl list process repoid={Repository_ID} appid={Application_ID}
+```
+Get logs of a process:
+```couchbasequery
+ctl logs processid={Process_ID}
 ```
 
 Please follow [this](https://github.com/klovercloud-ci-cd/ctl) guide.
