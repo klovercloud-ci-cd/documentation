@@ -92,6 +92,13 @@ Attach Company:
 ```couchbasequery
 ctl update user option=attach_company file={file}
 ```
+File Example:
+```couchbasequery
+{
+	"id": "123456",
+	"name": "demoCompany"
+}
+```
 Re-login:
 ```couchbasequery
 ctl login option apiserver={apiServerUrl} option security={securityUrl}
