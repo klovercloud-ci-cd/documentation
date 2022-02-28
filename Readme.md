@@ -158,4 +158,3 @@ Get logs of a process:
 ctl logs processid={Process_ID}
 ```
 
-Please follow [this](https://github.com/klovercloud-ci-cd/ctl) guide.
