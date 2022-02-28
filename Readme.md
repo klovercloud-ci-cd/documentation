@@ -171,3 +171,7 @@ Get logs of a process:
 ctl logs processid={Process_ID}
 ```
 
+Logout:
+```couchbasequery
+ctl logout
+```
