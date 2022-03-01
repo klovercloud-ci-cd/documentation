@@ -6,6 +6,10 @@ Clone:
 ```couchbasequery
 git clone https://github.com/klovercloud-ci-cd/documentation.git
 ```
+Note: ```api-server``` Listens ```.git``` webhook events.  In case of local installation, ```api-server``` host and port need to be accessible from ```.git```. To accomplish this, you can use [ngrok](https://ngrok.com/) or any of the compatible tools. 
+
+Incase of ```ngrok```, please follow [this](ngrok.md) steps first.
+
 
 Set required version:
 ```couchbasequery
