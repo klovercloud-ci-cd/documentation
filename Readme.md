@@ -6,10 +6,6 @@ Clone:
 ```couchbasequery
 git clone https://github.com/klovercloud-ci-cd/documentation.git
 ```
-Note: ```api-server``` Listens ```.git``` webhook events.  In case of local installation, ```api-server``` host and port need to be accessible from ```.git```. To accomplish this, you can use [ngrok](https://ngrok.com/) or any of the compatible tools. 
-
-Incase of ```ngrok```, please follow [this](ngrok.md) steps first.
-
 
 Set required version:
 ```couchbasequery
@@ -41,8 +37,70 @@ Example of a successful installation:
 
 ![context](files/images/deployStatusExample.png)
 
+Note: ```api-server``` Listens ```.git``` webhook events.  In case of local installation, ```api-server``` host and port need to be accessible from ```.git```. To accomplish this, you can use [ngrok](https://ngrok.com/) or any of the compatible tools.
+
+Incase of ```ngrok```, please follow [this](ngrok.md) steps first.
+
+Forward security service:
+```couchbasequery
+kubectl port-forward --address yourIP svc/klovercloud-security 4000:80 -n klovercloud
+```
+
+Run the following command:
+```couchbasequery
+./files/$KLOVERCLOUD_CI_VERSION/scripts/refactor.sh
+```
+
+Note: Forwarded api-service url will be asked. It will replace the ```.git``` url with accessable api-service url.
 
 ## Getting started
+[This](https://github.com/klovercloud-ci-cd/test-app) is the example we are following.
+Fork this repository.
+
+Service account is attached with this [pipeline](https://github.com/klovercloud-ci-cd/test-app/blob/master/klovercloud/pipeline/pipeline.yaml). Service account contains two secrets; one for repository and one for registry.
+
+Registry secret example:
+```yaml
+apiVersion: v1
+data:
+  password: <your_registry_password>
+  username: <your_registry_username>
+kind: Secret
+metadata:
+  annotations:
+    tekton.dev/docker-0: https://index.docker.io/
+  name: image-sec
+  namespace: tekton
+type: kubernetes.io/basic-auth
+```
+
+Repository secret example:
+```yaml
+apiVersion: v1
+data:
+  password: <your_repository_password>
+  username: <your_repository_username>
+kind: Secret
+metadata:
+  annotations:
+    tekton.dev/git-0: https://github.com/
+  name: repo-sec
+  namespace: tekton
+type: kubernetes.io/basic-auth
+```
+
+Service account example:
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: test-sa
+  namespace: tekton
+secrets:
+  - name: image-sec
+  - name: repo-sec
+```
+
 Set env:
 - Linux:
 ```couchbasequery
@@ -76,12 +134,13 @@ Available Commands:
   completion  Generate the autocompletion script for the specified shell
   describe    Describe resource [company/repository/application]
   help        Help about any command
-  list        Describe resource [company/repository/application/process]
+  list        List resources [company/repository/application/process]
   login       Login using email and password
+  logout      Logout user from the ctl
   logs        Get logs by process ID
-  register    Register User
+  register    Register user
   trigger     Notify git
-  update      Update resource [repository/application]
+  update      Update resource [user/repository/application]
 
 Flags:
   -h, --help      help for ctl
@@ -89,29 +148,32 @@ Flags:
 
 Use "ctl [command] --help" for more information about a command.
 ```
+
 Admin Registration using json or yaml file:
 ```couchbasequery
-ctl register file={file}
+ctl register file={file} option apiserver={apiserver_url} option security={security_url}
 ```
+
 File Example:
 ```couchbasequery
 {
 	"first_name": "Klovercloud",
 	"last_name": "Admin",
-	"email": "klovercloud.admin@klovercloud.com",
+	"email": "youremail",
 	"phone": "01xxxxxxxx",
 	"auth_type": "password",
-	"password": "adminabc"
+	"password": "*******"
 }
 ```
 Login:
 ```couchbasequery
-ctl login option apiserver={apiServerUrl} option security={securityUrl}
+ctl login
 ```
 ```couchbasequery
-Enter email: klovercloud.admin@klovercloud.com
+Enter email:
 Enter Password:
 ```
+
 Attach Company:
 ```couchbasequery
 ctl update user option=attach_company file={file}
@@ -123,30 +185,47 @@ File Example:
 	"name": "demoCompany"
 }
 ```
+
 Re-login:
 ```couchbasequery
-ctl login option apiserver={apiServerUrl} option security={securityUrl}
+ctl login
 ```
 ```couchbasequery
-Enter email: klovercloud.admin@klovercloud.com
+Enter email:
 Enter Password:
 ```
-Repository Append:
+
+Append Repository:
 ```couchbasequery
 ctl update repos file={file} option=APPEND_REPOSITORY
 ```
+
 File Example:
 ```couchbasequery
 {
   "repositories": [
     {
-      "type": "GITHUB",
-      "token": "abcde12345"
+      "type": "GITHUB/BITBUCKET",
+      "token": "your_repository_token"
     }
   ]
 }
 ```
-Application Append:
+
+List Repository:
+```couchbasequery
+ctl list repos
+```
+Output:
+```cmd
++-------------+------------+--------------------------------------+--------+
+| API VERSION |    KIND    |                  ID                  |  TYPE  |
++-------------+------------+--------------------------------------+--------+
+| api/v1      | Repository | 3dc74cf2-a6c3-43e2-b088-cefe1a79ac11 | GITHUB |
++-------------+------------+--------------------------------------+--------+
+```
+
+Append Application:
 ```couchbasequery
 ctl update apps file={file} repoid={repositoryID} option=APPEND_APPLICATION
 ```
@@ -158,20 +237,34 @@ File Example:
             "_metadata": {
                 "name": "test1"
             },
-            "url": "https://github.com/shabrul2451/testApp"
+            "url": "https://github.com/klovercloud-ci-cd/test-app"
         }
     ]
 }
 ```
-Check [this](https://github.com/klovercloud-ci-cd/core-engine/blob/master/markdownfiles/tutorial-v1.0.0.md) pipeline example.
 
-Every update to the repository will trigger the pipeline attached.
+List Application:
+```couchbasequery
+ctl list apps repoid={repository_id}
+```
+Output:
+```cmd
++-------------+-------------+--------------------------------------+-------+---------------------+------------------+------------------------------------------------------------+
+| API VERSION |    KIND     |                  ID                  | NAME  |       LABELS        | ISWEBHOOKENABLED |                            URL                             |
++-------------+-------------+--------------------------------------+-------+---------------------+------------------+------------------------------------------------------------+
+| api/v1      | Application | ec3fa8ac-1242-4812-819d-54ebb8203332 | test  | compId: 12345       | false            | https://github.com/klovercloud-ci-cd/testapp               |
+|             |             |                                      |       | teamId: 90000093333 |                  |                                                            |
+|             |             |                                      |       |                     |                  |                                                            |
++-------------+-------------+--------------------------------------+-------+---------------------+------------------+------------------------------------------------------------+
+```
 
-Process list of an application:
+Pipeline will be triggered for every repository update of specific branches.
+
+List process:
 ```couchbasequery
 ctl list process repoid={Repository_ID} appid={Application_ID}
 ```
-Get logs of a process:
+Logs:
 ```couchbasequery
 ctl logs processid={Process_ID}
 ```
