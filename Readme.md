@@ -148,7 +148,7 @@ File Example:
 ```
 Application Append:
 ```couchbasequery
-ctl update apps file={file} option=APPEND_APPLICATION
+ctl update apps file={file} repoid={repositoryID} option=APPEND_APPLICATION
 ```
 File Example:
 ```couchbasequery
