@@ -29,7 +29,7 @@ spec:
             - configMapRef:
                 name: klovercloud-ci-event-bank-envar-config
             - secretRef:
-                name: klovercloud-ci-event-bank-mongo-secret
+                name: klovercloud-mongo-secret
           ports:
             - containerPort: 8080
           readinessProbe:
