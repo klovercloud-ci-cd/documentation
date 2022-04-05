@@ -121,7 +121,7 @@ SET KCPATH=C:\klovercloud\
 ```
 [N:B:] in case of windows please restart.
 ### Prerequisites:
-- [Ctl Installation](https://github.com/klovercloud-ci-cd/ctl)
+- [Ctl Installation](https://github.com/klovercloud-ci-cd/ctl/tree/master#readme)
 ```cmd
 Cli to use klovercloud-ci apis!
 
