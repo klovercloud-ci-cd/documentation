@@ -12,7 +12,7 @@ COMPANY_NAME=""
 version=v1.0.1
 
 kubectl apply -f files/$version/k8s/descriptors/namespace.yaml
-rmdir -rf files/$version/k8s/descriptors/temp
+rm -rf files/$version/k8s/descriptors/temp
 mkdir files/$version/k8s/descriptors/temp
 
 echo "Want local Db? [Y/N]"
@@ -83,8 +83,8 @@ if [ "$m" = "Y" ]; then
   read -p "Enter your phone:" USER_PHONE
   read -p "Enter your company name:" COMPANY_NAME
 
-  sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e 's@${user_email}@'"$USER_EMAIL"'@g' -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/v1.0.1/k8s/descriptors/temp/temp-security-server-configmap.yml >files/v1.0.1/k8s/descriptors/temp/temp.yml
-  mv files/v1.0.1/k8s/descriptors/temp/temp.yml files/v1.0.1/k8s/descriptors/temp/temp-security-server-configmap.yml
+  sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e 's@${user_email}@'"$USER_EMAIL"'@g' -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml >files/$version/k8s/descriptors/temp/temp.yml
+  mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
 
 fi
 
