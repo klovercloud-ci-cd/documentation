@@ -2,8 +2,7 @@ read -p "Enter your public api service base url:" url
 
 version=v1.0.1
 
-sed -e 's@${api_service_base_url}@'"$url"'@g' files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml >files/$version/k8s/descriptors/temp/temp.yml
-mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
+sed -e 's@${api_service_base_url}@'"$url"'@g' files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml >files/$version/k8s/descriptors/temp/temp.yml; mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
 
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
 kubectl rollout restart deploy klovercloud-integration-manager -n klovercloud

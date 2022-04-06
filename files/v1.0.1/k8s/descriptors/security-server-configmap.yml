@@ -26,7 +26,7 @@ data:
   INTEGRATION_MANAGER_URL: "http://klovercloud-integration-manager.klovercloud.svc.cluster.local/api/v1"
   USER_FIRST_NAME: "${user_first_name}"
   USER_LAST_NAME: "${user_last_name}"
-  USER_EMAIL: "${user_email}"
+  USER_EMAIL: "user_email"
   USER_PHONE: "${user_phone}"
   USER_AUTH_TYPE: "password"
   USER_PASSWORD: "${user_password}"

@@ -83,17 +83,15 @@ if [ "$m" = "Y" ]; then
   read -p "Enter your phone:" USER_PHONE
   read -p "Enter your company name:" COMPANY_NAME
 
-  sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e 's@${user_email}@'"$USER_EMAIL"'@g' -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml >files/$version/k8s/descriptors/temp/temp.yml
-  mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
+  sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e "s|user_email|${USER_EMAIL}|g" -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml >files/$version/k8s/descriptors/temp/temp.yml; mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
 
 fi
 
 #deploying tekton pipeline version: v0.15.0
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 
-# Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
-# shellcheck disable=SC2027
+# shellcheck disable=SC2027d
 ROLLOUT_STATUS_CMD="kubectl rollout status deployment/tekton-pipelines-controller -n tekton-pipelines"
 until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   $ROLLOUT_STATUS_CMD
