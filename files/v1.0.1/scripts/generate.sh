@@ -12,6 +12,7 @@ COMPANY_NAME=""
 version=v1.0.1
 
 kubectl apply -f files/$version/k8s/descriptors/namespace.yaml
+rmdir -rf files/$version/k8s/descriptors/temp
 mkdir files/$version/k8s/descriptors/temp
 
 echo "Want local Db? [Y/N]"
@@ -49,36 +50,26 @@ else
   read -p "Enter your mongo password:" mongo_password
 
   # editing mongo-secret.yaml
-  sed -e 's@${mongo_username}@'"$mongo_username"'@g' <"files/$version/k8s/descriptors/mongo-secret.yaml" \
+  sed -e 's@${mongo_username}@'"$mongo_username"'@g' -e 's@${mongo_password}@'"$mongo_password"'@g' <"files/$version/k8s/descriptors/mongo-secret.yaml" \
     >files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml
-  sed -e 's@${mongo_password}@'"$mongo_password"'@g' <"files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml" \
-    >files/$version/k8s/descriptors/temp/temp-mongo-secret1.yaml
 
   # editing event-bank descriptor
-  sed -e 's@${mongo_server}@'"$mongo_server"'@g' <"files/$version/k8s/descriptors/event-bank-configmap.yaml" \
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/event-bank-configmap.yaml" \
     >files/$version/k8s/descriptors/temp/temp-event-bank-configmap.yaml
-  sed -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/temp/temp-event-bank-configmap.yaml" \
-    >files/$version/k8s/descriptors/temp/temp-event-bank-configmap1.yaml
 
   # editing klovercloud-ci-integration-manager descriptor
-  sed -e 's@${mongo_server}@'"$mongo_server"'@g' <"files/$version/k8s/descriptors/integration-manager-configmap.yaml" \
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/integration-manager-configmap.yaml" \
     >files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
-  sed -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml" \
-    >files/$version/k8s/descriptors/temp/temp-integration-manager-configmap1.yaml
 
   # editing core-engine descriptor
-  sed -e 's@${mongo_server}@'"$mongo_server"'@g' <"files/$version/k8s/descriptors/core-engine-configmap.yaml" \
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/core-engine-configmap.yaml" \
     >files/$version/k8s/descriptors/temp/temp-core-engine-configmap.yaml
-  sed -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/temp/temp-core-engine-configmap.yaml" \
-    >files/$version/k8s/descriptors/temp/temp-core-engine-configmap1.yaml
 
   #editing security descriptor
-  sed -e 's@${mongo_server}@'"$mongo_server"'@g' <"files/$version/k8s/descriptors/security-server-configmap.yml" \
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/security-server-configmap.yml" \
     >files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
-  sed -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml" \
-    >files/$version/k8s/descriptors/temp/temp-security-server-configmap1.yml
 
-  kubectl apply -f files/$version/k8s/descriptors/temp/temp-mongo-secret1.yaml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml
 
 fi
 
@@ -92,19 +83,8 @@ if [ "$m" = "Y" ]; then
   read -p "Enter your phone:" USER_PHONE
   read -p "Enter your company name:" COMPANY_NAME
 
-  USER_FIRST_NAME="\"$USER_FIRST_NAME\""
-  USER_LAST_NAME="\"$USER_LAST_NAME\""
-  USER_EMAIL="\"$USER_EMAIL\""
-  USER_PASSWORD="\"$USER_PASSWORD\""
-  USER_PHONE="\"$USER_PHONE\""
-  COMPANY_NAME="\"$COMPANY_NAME\""
-
-  sed -i "/^\([[:space:]]*USER_FIRST_NAME: \).*/s//\1$USER_FIRST_NAME/" files/$version/k8s/descriptors/security-server-configmap.yml
-  sed -i "/^\([[:space:]]*USER_LAST_NAME: \).*/s//\1$USER_LAST_NAME/" files/$version/k8s/descriptors/security-server-configmap.yml
-  sed -i "/^\([[:space:]]*USER_EMAIL: \).*/s//\1$USER_EMAIL/" files/$version/k8s/descriptors/security-server-configmap.yml
-  sed -i "/^\([[:space:]]*USER_PASSWORD: \).*/s//\1$USER_PASSWORD/" files/$version/k8s/descriptors/security-server-configmap.yml
-  sed -i "/^\([[:space:]]*USER_PHONE: \).*/s//\1$USER_PHONE/" files/$version/k8s/descriptors/security-server-configmap.yml
-  sed -i "/^\([[:space:]]*COMPANY_NAME: \).*/s//\1$COMPANY_NAME/" files/$version/k8s/descriptors/security-server-configmap.yml
+  sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e 's@${user_email}@'"$USER_EMAIL"'@g' -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/v1.0.1/k8s/descriptors/temp/temp-security-server-configmap.yml >files/v1.0.1/k8s/descriptors/temp/temp.yml
+  mv files/v1.0.1/k8s/descriptors/temp/temp.yml files/v1.0.1/k8s/descriptors/temp/temp-security-server-configmap.yml
 
 fi
 
@@ -134,7 +114,7 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
 done
 
 #deploying event bank
-kubectl apply -f files/$version/k8s/descriptors/temp/temp-event-bank-configmap1.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-event-bank-configmap.yaml
 kubectl apply -f files/$version/k8s/descriptors/event-bank-deployment.yaml
 
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
@@ -164,7 +144,7 @@ done
 kubectl apply -f files/$version/k8s/descriptors/api-service-service.yaml
 
 # deploying klovercloud-ci-integration-manager\
-kubectl apply -f files/$version/k8s/descriptors/temp/temp-integration-manager-configmap1.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
 kubectl apply -f files/$version/k8s/descriptors/integration-manager-deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
@@ -182,7 +162,7 @@ kubectl apply -f files/$version/k8s/descriptors/integration-manager-service.yaml
 kubectl apply -f files/$version/k8s/rbac/core-engine-cluster-role.yaml
 kubectl apply -f files/$version/k8s/rbac/core-engine-service-account.yaml
 kubectl apply -f files/$version/k8s/rbac/core-engine-cluster-rolebinding.yaml
-kubectl apply -f files/$version/k8s/descriptors/temp/temp-core-engine-configmap1.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-core-engine-configmap.yaml
 kubectl apply -f files/$version/k8s/descriptors/core-engine-deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
@@ -215,7 +195,7 @@ done
 kubectl apply -f files/$version/k8s/descriptors/agent-service.yaml
 
 # deploying security
-kubectl apply -f files/$version/k8s/descriptors/temp/temp-security-server-configmap1.yml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
 kubectl apply -f files/$version/k8s/descriptors/security-server-deployment.yaml
 
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
