@@ -10,38 +10,38 @@ USER_PASSWORD=""
 USER_PHONE=""
 COMPANY_NAME=""
 version=v1.0.1
+
 kubectl apply -f files/$version/k8s/descriptors/namespace.yaml
+mkdir files/$version/k8s/descriptors/temp
 
 echo "Want local Db? [Y/N]"
 read n
-if [ "$n" = "Y" ]
-then
+if [ "$n" = "Y" ]; then
   TMPFILE=$(mktemp)
-      /usr/bin/openssl rand -base64 741 > $TMPFILE
-      kubectl create secret generic shared-bootstrap-data --from-file=internal-auth-mongodb-keyfile=$TMPFILE -n klovercloud
-      rm $TMPFILE
+  /usr/bin/openssl rand -base64 741 >$TMPFILE
+  kubectl create secret generic shared-bootstrap-data --from-file=internal-auth-mongodb-keyfile=$TMPFILE -n klovercloud
+  rm $TMPFILE
 
-      # Create mongodb service with mongod stateful-set
-      # TODO: Temporarily added no-valudate due to k8s 1.8 bug: https://github.com/kubernetes/kubernetes/issues/53309
-      kubectl apply -f files/$version/k8s/descriptors/db/mongo/mongo-deploy.yaml --validate=false
-      sleep 5
+  # Create mongodb service with mongod stateful-set
+  # TODO: Temporarily added no-valudate due to k8s 1.8 bug: https://github.com/kubernetes/kubernetes/issues/53309
+  kubectl apply -f files/$version/k8s/descriptors/db/mongo/mongo-deploy.yaml --validate=false
+  sleep 5
 
-      # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
-      ATTEMPTS=0
-      # shellcheck disable=SC2027
-      ROLLOUT_STATUS_CMD="kubectl rollout status statefulSet/mongod -n klovercloud"
-      until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
-        $ROLLOUT_STATUS_CMD
-        # shellcheck disable=SC2154
-        ATTEMPTS=$((attempts + 1))
-        sleep 5
-      done
+  # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
+  ATTEMPTS=0
+  # shellcheck disable=SC2027
+  ROLLOUT_STATUS_CMD="kubectl rollout status statefulSet/mongod -n klovercloud"
+  until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+    $ROLLOUT_STATUS_CMD
+    # shellcheck disable=SC2154
+    ATTEMPTS=$((attempts + 1))
+    sleep 5
+  done
 
-
-      mongo_server="\"mongod-0.mongodb-service.klovercloud.svc.cluster.local\""
-      mongo_port="\"27017\""
-      mongo_username="\"admin\""
-      mongo_password="\"admin123\""
+  mongo_server="\"mongod-0.mongodb-service.klovercloud.svc.cluster.local\""
+  mongo_port="\"27017\""
+  mongo_username="\"admin\""
+  mongo_password="\"admin123\""
 else
   read -p "Enter mongo server:" mongo_server
   read -p "Enter mongo port:" mongo_port
@@ -50,34 +50,33 @@ else
 
   # editing mongo-secret.yaml
   sed -e 's@${mongo_username}@'"$mongo_username"'@g' <"files/$version/k8s/descriptors/mongo-secret.yaml" \
-    > files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml
+    >files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml
   sed -e 's@${mongo_password}@'"$mongo_password"'@g' <"files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml" \
-    > files/$version/k8s/descriptors/temp/temp-mongo-secret1.yaml
+    >files/$version/k8s/descriptors/temp/temp-mongo-secret1.yaml
 
   # editing event-bank descriptor
   sed -e 's@${mongo_server}@'"$mongo_server"'@g' <"files/$version/k8s/descriptors/event-bank-configmap.yaml" \
-  > files/$version/k8s/descriptors/temp/temp-event-bank-configmap.yaml
+    >files/$version/k8s/descriptors/temp/temp-event-bank-configmap.yaml
   sed -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/temp/temp-event-bank-configmap.yaml" \
-  > files/$version/k8s/descriptors/temp/temp-event-bank-configmap1.yaml
+    >files/$version/k8s/descriptors/temp/temp-event-bank-configmap1.yaml
 
   # editing klovercloud-ci-integration-manager descriptor
   sed -e 's@${mongo_server}@'"$mongo_server"'@g' <"files/$version/k8s/descriptors/integration-manager-configmap.yaml" \
-  > files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
+    >files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
   sed -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml" \
-  > files/$version/k8s/descriptors/temp/temp-integration-manager-configmap1.yaml
-
+    >files/$version/k8s/descriptors/temp/temp-integration-manager-configmap1.yaml
 
   # editing core-engine descriptor
   sed -e 's@${mongo_server}@'"$mongo_server"'@g' <"files/$version/k8s/descriptors/core-engine-configmap.yaml" \
-  > files/$version/k8s/descriptors/temp/temp-core-engine-configmap.yaml
+    >files/$version/k8s/descriptors/temp/temp-core-engine-configmap.yaml
   sed -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/temp/temp-core-engine-configmap.yaml" \
-  > files/$version/k8s/descriptors/temp/temp-core-engine-configmap1.yaml
+    >files/$version/k8s/descriptors/temp/temp-core-engine-configmap1.yaml
 
   #editing security descriptor
   sed -e 's@${mongo_server}@'"$mongo_server"'@g' <"files/$version/k8s/descriptors/security-server-configmap.yml" \
-  > files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
+    >files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
   sed -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml" \
-  > files/$version/k8s/descriptors/temp/temp-security-server-configmap1.yml
+    >files/$version/k8s/descriptors/temp/temp-security-server-configmap1.yml
 
   kubectl apply -f files/$version/k8s/descriptors/temp/temp-mongo-secret1.yaml
 
@@ -85,8 +84,7 @@ fi
 
 echo "Want to Register Admin? [Y/N]"
 read m
-if [ "$m" = "Y" ]
-then
+if [ "$m" = "Y" ]; then
   read -p "Enter your first name:" USER_FIRST_NAME
   read -p "Enter your last name:" USER_LAST_NAME
   read -p "Enter your email:" USER_EMAIL
@@ -151,7 +149,6 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
 done
 kubectl apply -f files/$version/k8s/descriptors/event-bank-service.yaml
 
-
 # deploying api-service
 kubectl apply -f files/$version/k8s/descriptors/api-service-configmap.yaml
 kubectl apply -f files/$version/k8s/descriptors/api-service-deployment.yaml
@@ -165,7 +162,6 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   sleep 5
 done
 kubectl apply -f files/$version/k8s/descriptors/api-service-service.yaml
-
 
 # deploying klovercloud-ci-integration-manager\
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-integration-manager-configmap1.yaml
@@ -181,7 +177,6 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   sleep 5
 done
 kubectl apply -f files/$version/k8s/descriptors/integration-manager-service.yaml
-
 
 # deploying ci-core
 kubectl apply -f files/$version/k8s/rbac/core-engine-cluster-role.yaml
@@ -218,7 +213,6 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   sleep 5
 done
 kubectl apply -f files/$version/k8s/descriptors/agent-service.yaml
-
 
 # deploying security
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-security-server-configmap1.yml
