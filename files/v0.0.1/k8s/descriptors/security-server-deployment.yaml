@@ -1,45 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: klovercloud-api-service
+  name: klovercloud-security
   namespace: klovercloud
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: klovercloud-api-service
+      app: klovercloud-security
   template:
     metadata:
       labels:
-        app: klovercloud-api-service
+        app: klovercloud-security
     spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: app
           imagePullPolicy: Always
-          image: quay.io/klovercloud/ci-api-service:v1.0.1
+          image: quay.io/klovercloud/ci-security:v0.0.1
           resources:
-            limits:
-              cpu: 100m
-              memory: 256Mi
             requests:
               cpu: 66m
               memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
           envFrom:
+            - secretRef:
+                name: klovercloud-mongo-secret
             - configMapRef:
-                name: klovercloud-api-service-envar-config
+                name: klovercloud-security-envar-config
           ports:
             - containerPort: 8080
           readinessProbe:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
             periodSeconds: 10
-            failureThreshold: 3

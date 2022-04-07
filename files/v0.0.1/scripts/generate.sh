@@ -9,7 +9,7 @@ USER_EMAIL=""
 USER_PASSWORD=""
 USER_PHONE=""
 COMPANY_NAME=""
-version=v1.0.1
+version=v0.0.1
 
 kubectl apply -f files/$version/k8s/descriptors/namespace.yaml
 rm -rf files/$version/k8s/descriptors/temp
@@ -91,7 +91,6 @@ fi
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 
 ATTEMPTS=0
-# shellcheck disable=SC2027d
 ROLLOUT_STATUS_CMD="kubectl rollout status deployment/tekton-pipelines-controller -n tekton-pipelines"
 until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   $ROLLOUT_STATUS_CMD

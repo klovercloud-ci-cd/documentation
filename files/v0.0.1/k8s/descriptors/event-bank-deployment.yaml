@@ -1,35 +1,35 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: klovercloud-ci-core
+  name: klovercloud-ci-event-bank
   namespace: klovercloud
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: klovercloud-ci-core
+      app: klovercloud-ci-event-bank
   template:
     metadata:
       labels:
-        app: klovercloud-ci-core
+        app: klovercloud-ci-event-bank
     spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: app
           imagePullPolicy: Always
-          image: quay.io/klovercloud/ci-core:v1.0.0
+          image: quay.io/klovercloud/ci-event-bank:v0.0.1
           resources:
-            requests:
+            limits:
               cpu: 100m
               memory: 256Mi
-            limits:
+            requests:
               cpu: 100m
               memory: 256Mi
           envFrom:
             - configMapRef:
-                name: klovercloud-ci-core-envar-config
+                name: klovercloud-ci-event-bank-envar-config
             - secretRef:
-                name: klovercloud-ci-core-mongo-secret
+                name: klovercloud-mongo-secret
           ports:
             - containerPort: 8080
           readinessProbe:
@@ -38,10 +38,11 @@ spec:
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10
+            failureThreshold: 3
           livenessProbe:
             httpGet:
               path: /health
               port: 8080
             initialDelaySeconds: 10
             periodSeconds: 10
-      serviceAccountName: klovercloud-ci-core-sa
+            failureThreshold: 3

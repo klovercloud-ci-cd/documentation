@@ -5,4 +5,4 @@
 *.ini
 /out/
 *.exe
-files/v1.0.0/k8s/descriptors/temp
+files/v0.0.1/k8s/descriptors/temp
