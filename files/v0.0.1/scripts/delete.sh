@@ -6,7 +6,7 @@ sleep 5
 kubectl delete persistentvolumeclaims -l role=mongo -n klovercloud
 
 #deleting tekton pipeline
-kubectl delete --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.24.0/release.yaml
+kubectl delete --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.34.1/release.yaml
 
 kubectl delete -f files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml
 
