@@ -88,7 +88,7 @@ if [ "$m" = "Y" ]; then
 fi
 
 #deploying tekton pipeline version: v0.15.0
-kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
+kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.34.1/release.yaml
 
 ATTEMPTS=0
 ROLLOUT_STATUS_CMD="kubectl rollout status deployment/tekton-pipelines-controller -n tekton-pipelines"
