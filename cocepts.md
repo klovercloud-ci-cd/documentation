@@ -131,7 +131,9 @@ steps: # List of stages.
 ```
 <br />
 
-![context](files/images/diagram.png)
+<p align="center">
+  <img src="files/images/diagram.png" alt="Material Bread logo">
+</p>
 
 <p align="center">
     Figure: Pipeline diagram.
