@@ -73,7 +73,7 @@ Steps are jobs or tasks with successors that make a Pipeline. Pipeline steps are
 ## Process 
 A process is an object of a Pipeline. When a Pipeline is triggered a new Process starts.
 
-##Example:
+## Example of a Pipeline:
 ```yml
 name: test # Name of the pipeline.
 steps: # List of stages.
