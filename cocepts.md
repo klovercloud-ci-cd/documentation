@@ -25,7 +25,7 @@ Steps are jobs or tasks with successors that make a Pipeline. Pipeline steps are
     next: 
       - interstep # Name of the next stage.
   ```
-- __INTERMEDIARY Step:__ - Intermediary step is used to run container.<br/><u>Example:</u><br/>
+- __Intermediary Step:__ - Intermediary step is used to run container.<br/><u>Example:</u><br/>
 ```yaml
   - name: interstep # Name of the stage.
     type: INTERMEDIARY # Type of the stage.
