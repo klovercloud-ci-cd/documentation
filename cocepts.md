@@ -24,7 +24,7 @@ Steps are jobs or tasks with successors that make a Pipeline. Pipeline steps are
       access_mode: ReadWriteOnce # Access mode to use.
     next: 
       - interstep # Name of the next stage.
-- ```
+  ```
 - __INTERMEDIARY Step:__ - Intermediary step is used to run a command on the image.<br/><u>Example:</u><br/>
 ```yaml
   - name: interstep # Name of the stage.
