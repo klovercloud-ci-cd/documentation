@@ -132,4 +132,7 @@ steps: # List of stages.
 <br />
 
 ![context](files/images/diagram.png)
-Figure: Pipeline diagram.
+
+<p align="center">
+    Figure: Pipeline diagram.
+</p>
