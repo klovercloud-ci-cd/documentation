@@ -8,7 +8,7 @@ Pipelines comprise:
 ```klovercloud/pipeline/pipeline.yaml``` file contains pipeline configuration.
 ## Step
 Steps are jobs or tasks with successors that make a Pipeline. Pipeline steps are defined in the pipeline.yaml file. It includes the following:
-- __Build step:__ - Build step is used to compile source code and build the image.<br/><u>Example:</u><br/>
+- __Build step:__ - Build step is used to compile source code, build the image and push.<br/><u>Example:</u><br/>
 ```yaml
  - name: build # Name of the stage.
     type: BUILD # Type of the stage.
@@ -25,7 +25,7 @@ Steps are jobs or tasks with successors that make a Pipeline. Pipeline steps are
     next: 
       - interstep # Name of the next stage.
   ```
-- __INTERMEDIARY Step:__ - Intermediary step is used to run a command on the image.<br/><u>Example:</u><br/>
+- __INTERMEDIARY Step:__ - Intermediary step is used to run container.<br/><u>Example:</u><br/>
 ```yaml
   - name: interstep # Name of the stage.
     type: INTERMEDIARY # Type of the stage.
@@ -42,7 +42,7 @@ Steps are jobs or tasks with successors that make a Pipeline. Pipeline steps are
     next:
       - deployDev
 ```
-- __Deployment Step:__ - Deployment step is used to deploy the image to the cluster.<br/><u>Example:</u><br/>
+- __Deployment Step:__ - Deployment step is used to deploy the descriptors and modify kubernetes work loads.<br/><u>Example:</u><br/>
 ```yaml
   - name: deployDev  # Name of the stage.
     type: DEPLOY  # Type of the stage.
@@ -132,3 +132,4 @@ steps: # List of stages.
 <br />
 
 ![context](files/images/diagram.png)
+Figure: Pipeline diagram.
