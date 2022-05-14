@@ -53,7 +53,7 @@ root@klovercloud-api-service-59b65595cf-n6qdx:/app#
 ```
 Copy the token and regenerate the configmap of agent.
 Example:
-```
+```yml
 apiVersion: v1
 kind: ConfigMap
 metadata:
