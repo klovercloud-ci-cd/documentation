@@ -278,6 +278,6 @@ ctl logout
 ```
 <br/>
 
-#### [External Agent Installation](extarnalAgent.md)
+#### [External Agent Installation](externalAgent.md)
 
 ### Welcome to KloverCloud CI/CD. Please feel free to [contribute](https://github.com/klovercloud-ci-cd/core-engine/blob/master/markdownfiles/CONTRIBUTING.md).
