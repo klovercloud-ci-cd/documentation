@@ -1,4 +1,8 @@
-To enable external agents, regenerate configmap of api-service:
+For external agents we need security. So we need to generate new token for calling api services. We can generate token via api service and instructions are bellow.
+
+Enable external agents, replace some values(ENABLE_AUTHENTICATION, PRIVATE_KEY_FOR_INTERNAL_CALL,PUBLIC_KEY_FOR_INTERNAL_CALL) of api service configmapconfigmap of api-service.
+
+[N:B: PRIVATE_KEY_FOR_INTERNAL_CALL & PUBLIC_KEY_FOR_INTERNAL_CALL are the pair of RSA key pair.]
 
 Example:
 ```yml
@@ -26,32 +30,28 @@ data:
   PRIVATE_KEY_FOR_INTERNAL_CALL: "{PRIVATE_KEY_FOR_INTERNAL_CALL}"
   PUBLIC_KEY_FOR_INTERNAL_CALL: "{PUBLIC_KEY_FOR_INTERNAL_CALL}"
 ```
-To apply the configmap, run:
+Apply the configmap, run:
 ```
 kubectl apply -f configmap.yaml
 ```
-To restart the deployment, run:
+Restart the deployment, run:
 ```
 kubectl rollout restart deployment/{deployment-name_of_api_service}
 ```
-To execute the deployment, run:
+Exec into api service pod, run:
 ```
 kubectl exec -it {api service pod} -n {namespace_of_api_service} bash
 ```
-To generate agent token, run:
+Generate agent token, run:
 ```
 kcpctl generate-jwt client={your agent name}
 ```
 It will return a token, which you can use to authenticate with the API.
 Example:
 ```
-root@klovercloud-api-service-59b65595cf-n6qdx:/app# kcpctl generate-jwt client=local_agent 
-
 token:  eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5hbWUiOiJsb2NhbCJ9LCJleHAiOjUyNTI1MjU4NDAsImlhdCI6MTY1MjUyNTg0MH0.iK2TuESPqeL8SAcnNN-BD_Iy3tLfEFybDW6YDpyvtlQsI5or8cMot_bUmI1iQMkM3Kag5pJ2RHm06w0qgAeLDY8KUGk7mIAWlo41Grdls8vTkyIoVeyE-LYR4tYefqoaP36eTs2tiumZyFmQ8htlWaLUUnUibqumfixu_4rqyxJvaRfTdDitd5dfQ_dqpsmgv18-EA4E1IygFsiqO3ju6PHHETPL41bhioUCBNIuJjt04g2cBQpIKU5ean75YbFRM5QAnlpQQXE-urmiT1_z0nSd_Diz10RLhSZqMaw9Ft1gLl3hkUkKfKifSWokOE9yNrt1j6NM0qwEfFwKwYGEF8DXTBiVmgCEP06DZKcTxj9I_edku2NzhRiOAtYh4zqN_i9VkeMndJGDRm8p29z9qjAr-0HsKetf0s4VwtypaqxGOd1d3wOJpsluEH7MmQMXgu-jmzdQk0yZUd8O3LmAUDsDg8Th6zBFY9U8QebZxQrlz-eiVJvXZqKjmcj2iuIjEod2MPcDGvfDM2wdh5QaABRuMSfIkX-82AZTEVcPjZAgtAeIZXToLxxdNWUqEzgOH0RNCt7c1-LVZ__9CPhz1Q3mXbDzrJ66t76KLQPk8c7gJtiqrj0iU74-dzO0Q9_mGNIsL1jhi6zuXRmywc8ka_D7FswiVbFCZYWd47yJ0vk
-
-root@klovercloud-api-service-59b65595cf-n6qdx:/app#
 ```
-Copy the token and regenerate the configmap of agent.
+Copy the token and replace the value "TOKEN" of agent configmap.
 Example:
 ```yml
 apiVersion: v1
@@ -70,11 +70,85 @@ data:
   TOKEN: "{generated token}"
   ENABLE_AUTHENTICATION: "true"
 ```
-To apply the configmap, run the following command:
+Apply the configmap, run the following command:
 ```
 kubectl apply -f klovercloud-ci-agent-envar-config.yaml
 ```
-To restart the agent, run the following command:
+Apply deployment.
+Example:
+```yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: klovercloud-ci-agent
+  namespace: klovercloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: klovercloud-ci-agent
+  template:
+    metadata:
+      labels:
+        app: klovercloud-ci-agent
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: app
+          imagePullPolicy: Always
+          image: { docker image of klovercloud-ci-agent }
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          envFrom:
+            - configMapRef:
+                name: klovercloud-ci-agent-envar-config
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      serviceAccountName: klovercloud-ci-agent-sa
 ```
-kubectl rollout restart deployment/{deployment_name_of_agent} -n {namespace_of_agent}
+Run the following command to apply the deployment:
 ```
+kubectl apply -f klovercloud-ci-agent.yaml
+```
+Apply the service.
+Example:
+```yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: klovercloud-ci-agent
+  namespace: klovercloud
+  labels:
+    app: klovercloud-ci-agent
+spec:
+  ports:
+  - name: http-rest
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: klovercloud-ci-agent
+```
+Run the following command to apply the service:
+```
+kubectl apply -f klovercloud-ci-agent.yaml
+```
+
+We have enabled authentication, so we need authorization token for internal agent also.We have to generate token by following above steps and replace the value of "TOKEN" in agent configmap and have to roll out restart the deployment of internal agent.
