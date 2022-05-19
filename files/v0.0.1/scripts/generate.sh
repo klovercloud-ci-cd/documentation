@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 mongo_server=""
 mongo_port=""
 mongo_username=""
@@ -47,7 +47,8 @@ else
   read -p "Enter mongo server:" mongo_server
   read -p "Enter mongo port:" mongo_port
   read -p "Enter your mongo username:" mongo_username
-  read -p "Enter your mongo password:" mongo_password
+  read -s -p "Enter your password: " mongo_password
+  echo "/n"
 
   # editing mongo-secret.yaml
   sed -e 's@${mongo_username}@'"$mongo_username"'@g' -e 's@${mongo_password}@'"$mongo_password"'@g' <"files/$version/k8s/descriptors/mongo-secret.yaml" \
@@ -73,19 +74,29 @@ else
 
 fi
 
-echo "Want to Register Admin? [Y/N]"
-read m
+read -p "Enter your first name:" USER_FIRST_NAME
+read -p "Enter your last name:" USER_LAST_NAME
+read -p "Enter your email:" USER_EMAIL
+while true; do
+  read -s -p "Enter your password: " USER_PASSWORD
+  echo
+  read -s -p "Confirm password: " USER_PASSWORD2
+  echo
+  [ "$USER_PASSWORD" = "$USER_PASSWORD2" ] && break
+  echo "Password does not match.Please try again"
+done
+read -p "Do you want to enter your company name & phone number? [Y/N]" m
 if [ "$m" = "Y" ]; then
-  read -p "Enter your first name:" USER_FIRST_NAME
-  read -p "Enter your last name:" USER_LAST_NAME
-  read -p "Enter your email:" USER_EMAIL
-  read -p "Enter your password:" USER_PASSWORD
   read -p "Enter your phone:" USER_PHONE
   read -p "Enter your company name:" COMPANY_NAME
-
-  sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e "s|user_email|${USER_EMAIL}|g" -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml >files/$version/k8s/descriptors/temp/temp.yml; mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
-
+else
+  USER_PHONE=""
+  COMPANY_NAME="default"
 fi
+
+
+sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e "s|user_email|${USER_EMAIL}|g" -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml >files/$version/k8s/descriptors/temp/temp.yml; mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
+
 
 #deploying tekton pipeline version: v0.15.0
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.34.1/release.yaml

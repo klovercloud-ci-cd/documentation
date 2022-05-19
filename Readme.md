@@ -18,7 +18,7 @@ Install klovercloud-ci:
 ```couchbasequery
 ./files/$KLOVERCLOUD_CI_VERSION/scripts/generate.sh
 ```
-Provide mongo server url and port.
+It will ask for local database.If no then provide mongo server url and port.
 
 ```Example:
 Enter mongo server:"loaclhost"
@@ -124,14 +124,14 @@ SET KCPATH=C:\klovercloud\
 ```
 [N:B:] in case of windows please restart.
 ### Prerequisites:
-- [Ctl Installation](https://github.com/klovercloud-ci-cd/ctl/tree/master#readme)
+- [Cli Installation](https://github.com/klovercloud-ci-cd/ctl/tree/master#readme)
 ```cmd
 Cli to use klovercloud-ci apis!
 
 Find more information at: https://github.com/klovercloud-ci-cd/ctl
 
 Usage:
-  ctl [command]
+  cli [command]
 
 Available Commands:
   completion  Generate the autocompletion script for the specified shell
@@ -139,59 +139,23 @@ Available Commands:
   help        Help about any command
   list        List resources [company/repository/application/process]
   login       Login using email and password
-  logout      Logout user from the ctl
+  logout      Logout user from the cli
   logs        Get logs by process ID
   register    Register user
   trigger     Notify git
   update      Update resource [user/repository/application]
 
 Flags:
-  -h, --help      help for ctl
-  -v, --version   version for ctl
+  -h, --help      help for cli
+  -v, --version   version for cli
 
-Use "ctl [command] --help" for more information about a command.
+Use "cli [command] --help" for more information about a command.
 ```
 
-Admin Registration using json or yaml file:
-```couchbasequery
-ctl register file={file} option apiserver={apiserver_url} option security={security_url}
-```
 
-File Example:
-```couchbasequery
-{
-	"first_name": "Klovercloud",
-	"last_name": "Admin",
-	"email": "youremail",
-	"phone": "01xxxxxxxx",
-	"auth_type": "password",
-	"password": "*******"
-}
-```
 Login:
 ```couchbasequery
-ctl login
-```
-```couchbasequery
-Enter email:
-Enter Password:
-```
-
-Attach Company:
-```couchbasequery
-ctl update user option=attach_company file={file}
-```
-File Example:
-```couchbasequery
-{
-	"id": "123456",
-	"name": "demoCompany"
-}
-```
-
-Re-login:
-```couchbasequery
-ctl login
+cli login -o apiserver={apiserver_url} -o security={security_url}
 ```
 ```couchbasequery
 Enter email:
@@ -200,7 +164,7 @@ Enter Password:
 
 Append Repository:
 ```couchbasequery
-ctl update repos file={file} option=APPEND_REPOSITORY
+cli create -r file={file} option=APPEND_REPOSITORY
 ```
 
 File Example:
@@ -217,7 +181,7 @@ File Example:
 
 List Repository:
 ```couchbasequery
-ctl list repos
+cli list -r
 ```
 Output:
 ```cmd
@@ -227,10 +191,16 @@ Output:
 | api/v1      | Repository | 3dc74cf2-a6c3-43e2-b088-cefe1a79ac11 | GITHUB |
 +-------------+------------+--------------------------------------+--------+
 ```
+Optionally you can set default repository:
+```couchbasequery
+```cmd
+ cli set repo={repository_id}
+```
+[N:B:] If default repository is set, user don't need to provide repository id.
 
 Append Application:
 ```couchbasequery
-ctl update apps file={file} repoid={repositoryID} option=APPEND_APPLICATION
+cli create -a file={file} repo={repository_id}
 ```
 File Example:
 ```couchbasequery
@@ -248,7 +218,7 @@ File Example:
 
 List Application:
 ```couchbasequery
-ctl list apps repoid={repository_id}
+cli list -a repo={repository_id}
 ```
 Output:
 ```cmd
@@ -265,16 +235,16 @@ Pipeline will be triggered for every repository update of specific branches.
 
 List process:
 ```couchbasequery
-ctl list process repoid={Repository_ID} appid={Application_ID}
+cli list -p repo={Repository_ID} app={Application_ID}
 ```
 Logs:
 ```couchbasequery
-ctl logs processid={Process_ID}
+cli logs processid={Process_ID}
 ```
 
 Logout:
 ```couchbasequery
-ctl logout
+cli logout
 ```
 <br/>
 
