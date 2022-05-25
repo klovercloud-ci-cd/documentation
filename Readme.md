@@ -164,7 +164,7 @@ Enter Password:
 
 Append Repository:
 ```couchbasequery
-cli create -r file={file} option=APPEND_REPOSITORY
+cli create -r file={file}
 ```
 
 File Example:
