@@ -7,9 +7,9 @@ metadata:
     app: klovercloud-ci-agent
 spec:
   ports:
-  - name: http-rest
-    port: 80
-    targetPort: 8080
-    protocol: TCP
+    - name: http-rest
+      port: 80
+      targetPort: 8080
+      protocol: TCP
   selector:
     app: klovercloud-ci-agent

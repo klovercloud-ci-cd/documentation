@@ -9,5 +9,5 @@ roleRef:
   name: ci-core-cluster-role
 subjects:
   - kind: ServiceAccount
-    name:  klovercloud-ci-core-sa
+    name: klovercloud-ci-core-sa
     namespace: klovercloud

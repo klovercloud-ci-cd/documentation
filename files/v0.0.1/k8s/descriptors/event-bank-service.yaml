@@ -7,8 +7,8 @@ metadata:
     app: klovercloud-ci-event-bank
 spec:
   ports:
-  - name: http-rest
-    port: 80
-    targetPort: 8080
+    - name: http-rest
+      port: 80
+      targetPort: 8080
   selector:
     app: klovercloud-ci-event-bank

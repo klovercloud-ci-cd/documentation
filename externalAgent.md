@@ -1,10 +1,13 @@
-For external agents we need security. So we need to generate new token for calling api services. We can generate token via api service and instructions are bellow.
+For external agents we need security. So we need to generate new token for calling api services. We can generate token
+via api service and instructions are bellow.
 
-Enable external agents, replace some values(ENABLE_AUTHENTICATION, PRIVATE_KEY_FOR_INTERNAL_CALL,PUBLIC_KEY_FOR_INTERNAL_CALL) of api service configmapconfigmap of api-service.
+Enable external agents, replace some values(ENABLE_AUTHENTICATION,
+PRIVATE_KEY_FOR_INTERNAL_CALL,PUBLIC_KEY_FOR_INTERNAL_CALL) of api service configmapconfigmap of api-service.
 
 [N:B: PRIVATE_KEY_FOR_INTERNAL_CALL & PUBLIC_KEY_FOR_INTERNAL_CALL are the pair of RSA key pair.]
 
 Example:
+
 ```yml
 apiVersion: v1
 kind: ConfigMap
@@ -30,29 +33,39 @@ data:
   PRIVATE_KEY_FOR_INTERNAL_CALL: "{PRIVATE_KEY_FOR_INTERNAL_CALL}"
   PUBLIC_KEY_FOR_INTERNAL_CALL: "{PUBLIC_KEY_FOR_INTERNAL_CALL}"
 ```
+
 Apply the configmap, run:
+
 ```
 kubectl apply -f configmap.yaml
 ```
+
 Restart the deployment, run:
+
 ```
 kubectl rollout restart deployment/{deployment-name_of_api_service}
 ```
+
 Exec into api service pod, run:
+
 ```
 kubectl exec -it {api service pod} -n {namespace_of_api_service} bash
 ```
+
 Generate agent token, run:
+
 ```
 kcpctl generate-jwt client={your agent name}
 ```
-It will return a token, which you can use to authenticate with the API.
-Example:
+
+It will return a token, which you can use to authenticate with the API. Example:
+
 ```
 token:  eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Im5hbWUiOiJsb2NhbCJ9LCJleHAiOjUyNTI1MjU4NDAsImlhdCI6MTY1MjUyNTg0MH0.iK2TuESPqeL8SAcnNN-BD_Iy3tLfEFybDW6YDpyvtlQsI5or8cMot_bUmI1iQMkM3Kag5pJ2RHm06w0qgAeLDY8KUGk7mIAWlo41Grdls8vTkyIoVeyE-LYR4tYefqoaP36eTs2tiumZyFmQ8htlWaLUUnUibqumfixu_4rqyxJvaRfTdDitd5dfQ_dqpsmgv18-EA4E1IygFsiqO3ju6PHHETPL41bhioUCBNIuJjt04g2cBQpIKU5ean75YbFRM5QAnlpQQXE-urmiT1_z0nSd_Diz10RLhSZqMaw9Ft1gLl3hkUkKfKifSWokOE9yNrt1j6NM0qwEfFwKwYGEF8DXTBiVmgCEP06DZKcTxj9I_edku2NzhRiOAtYh4zqN_i9VkeMndJGDRm8p29z9qjAr-0HsKetf0s4VwtypaqxGOd1d3wOJpsluEH7MmQMXgu-jmzdQk0yZUd8O3LmAUDsDg8Th6zBFY9U8QebZxQrlz-eiVJvXZqKjmcj2iuIjEod2MPcDGvfDM2wdh5QaABRuMSfIkX-82AZTEVcPjZAgtAeIZXToLxxdNWUqEzgOH0RNCt7c1-LVZ__9CPhz1Q3mXbDzrJ66t76KLQPk8c7gJtiqrj0iU74-dzO0Q9_mGNIsL1jhi6zuXRmywc8ka_D7FswiVbFCZYWd47yJ0vk
 ```
-Copy the token and replace the value "TOKEN" of agent configmap.
-Example:
+
+Copy the token and replace the value "TOKEN" of agent configmap. Example:
+
 ```yml
 apiVersion: v1
 kind: ConfigMap
@@ -70,12 +83,15 @@ data:
   TOKEN: "{generated token}"
   ENABLE_AUTHENTICATION: "true"
 ```
+
 Apply the configmap, run the following command:
+
 ```
 kubectl apply -f klovercloud-ci-agent-envar-config.yaml
 ```
-Apply deployment.
-Example:
+
+Apply deployment. Example:
+
 ```yml
 apiVersion: apps/v1
 kind: Deployment
@@ -123,12 +139,15 @@ spec:
             periodSeconds: 10
       serviceAccountName: klovercloud-ci-agent-sa
 ```
+
 Run the following command to apply the deployment:
+
 ```
 kubectl apply -f klovercloud-ci-agent.yaml
 ```
-Apply the service.
-Example:
+
+Apply the service. Example:
+
 ```yml
 apiVersion: v1
 kind: Service
@@ -146,9 +165,13 @@ spec:
   selector:
     app: klovercloud-ci-agent
 ```
+
 Run the following command to apply the service:
+
 ```
 kubectl apply -f klovercloud-ci-agent.yaml
 ```
 
-We have enabled authentication, so we need authorization token for internal agent also.We have to generate token by following above steps and replace the value of "TOKEN" in agent configmap and have to roll out restart the deployment of internal agent.
+We have enabled authentication, so we need authorization token for internal agent also.We have to generate token by
+following above steps and replace the value of "TOKEN" in agent configmap and have to roll out restart the deployment of
+internal agent.
