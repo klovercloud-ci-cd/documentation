@@ -48,8 +48,7 @@ includes the following:
       envs: key3:value1,key4:value2 # List of environment variables to pass to the stage.
       command: echo "Hello World" # Command to run.
       command_args: Hello World # Command arguments.
-      script:
-        echo "Hello zeromsi" // script_from_configmap: namespace/configmap_name  # Script to run.
+      script: echo "Hello zeromsi" / script_from_configmap: namespace/configmap_name  # Script to run.
     next:
       - deployDev
 ```
