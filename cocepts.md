@@ -55,7 +55,7 @@ includes the following:
 ```
 
 [N:B] For mounting script from config map in interstep, script_from_configmap: namespace/configmap_name should be used.
-Congig map should be created with the following content:
+Config map should be created with the following content:
 
 ```yaml
 apiVersion: v1 # Version of the config map.
