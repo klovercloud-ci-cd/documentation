@@ -39,9 +39,22 @@ Steps are jobs or tasks with successors that make a Pipeline. Pipeline steps are
       envs: key3:value1,key4:value2 # List of environment variables to pass to the stage.
       command: echo "Hello World" # Command to run.
       command_args: Hello World # Command arguments.
+      script: echo "Hello zeromsi" // script_from_configmap: namespace/configmap_name  # Script to run.
     next:
       - deployDev
 ```
+[N:B] For mounting script from config map in interstep, script_from_configmap: namespace/configmap_name should be used.
+Congig map should be created with the following content:
+```yaml
+apiVersion: v1 # Version of the config map.
+kind: ConfigMap # Kind of the config map.
+metadata:
+  name: script # Name of the config map.
+data: # Data of the config map.
+  script: | # Script to run.
+    curl www.google.com
+```
+
 - __Deployment Step:__ - Deployment step is used to deploy the descriptors and modify kubernetes work loads.<br/><u>Example:</u><br/>
 ```yaml
   - name: deployDev  # Name of the stage.
