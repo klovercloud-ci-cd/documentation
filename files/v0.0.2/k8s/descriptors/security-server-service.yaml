@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: klovercloud-security
+  namespace: klovercloud
+  labels:
+    app: klovercloud-security
+spec:
+  ports:
+    - name: http-rest
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: klovercloud-security

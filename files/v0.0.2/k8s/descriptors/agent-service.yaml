@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: klovercloud-ci-agent
+  namespace: klovercloud
+  labels:
+    app: klovercloud-ci-agent
+spec:
+  ports:
+    - name: http-rest
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: klovercloud-ci-agent

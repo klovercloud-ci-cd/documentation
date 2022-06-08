@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: klovercloud-ci-agent
+  namespace: klovercloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: klovercloud-ci-agent
+  template:
+    metadata:
+      labels:
+        app: klovercloud-ci-agent
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: app
+          imagePullPolicy: Always
+          image: quay.io/klovercloud/ci-agent:${version}
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          envFrom:
+            - configMapRef:
+                name: klovercloud-ci-agent-envar-config
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      serviceAccountName: klovercloud-ci-agent-sa
