@@ -130,10 +130,19 @@ mkdir klovercloud
 
 Export:
 
+Edit ```bashrc``` file
+
 ```couchbasequery
 vi ~/.bashrc
-#add the following line and save
+```
+
+Add the following line and save
+```couchbasequery
 export KCPATH=$HOME/klovercloud/
+```
+
+Source bashrc file
+```couchbasequery
 source ~/.bashrc
 ```
 
@@ -226,7 +235,6 @@ Output:
 Optionally you can set default repository:
 
 ```couchbasequery
-```cmd
  cli set repo={repository_id}
 ```
 
