@@ -48,13 +48,14 @@ includes the following:
       envs: key3:value1,key4:value2 # List of environment variables to pass to the stage.
       command: echo "Hello World" # Command to run.
       command_args: Hello World # Command arguments.
-      script: echo "Hello zeromsi" / script_from_configmap: namespace/configmap_name  # Script to run.
+      script: echo "Hello zeromsi" # Script to run.
+      script_from_configmap: default/configmap_name # Run Script from configmap
     next:
       - deployDev
 ```
 
-[N:B] For mounting script from config map in interstep, script_from_configmap: namespace/configmap_name should be used.
-Config map should be created with the following content:
+[N:B] For mounting script from config map in interstep, follow ```namespace/configmap_name convention``` for ```script_from_configmap params```.
+Script is expected to be in data.script path:
 
 ```yaml
 apiVersion: v1 # Version of the config map.
@@ -78,12 +79,15 @@ data: # Data of the config map.
       name: ubuntu # Name of the deployment.
       namespace: default # Namespace to use.
       type: deployment # Type of the deployment.
-      revision: master # Revision of the repository.
+      revision: master # If the commit is for master branch deploy job will run.
+      trunk_based: enabled # If Enabled, image revision will be commit id.
+      rollout_restart: true # If true, after editing resource, it will rollout restart.
       env: dev # Environment to use.
       images: shabrul2451/test-dev  # List of images to use.
     next: # List of next stages.
       - jenkinsJob
 ```
+[N:B] As the environment name is ```dev``` ,all payloads inside ```klovercloud/pipeline/configs/dev.yaml``` file will be applied first.
 
 - __Jenkins Job Step:__ - Jenkins job step is used to run a jenkins job.<br/><u>Example:</u><br/>
 
