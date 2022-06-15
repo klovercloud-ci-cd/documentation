@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: klovercloud-ci-light-house-command
+  namespace: klovercloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: klovercloud-ci-light-house-command
+  template:
+    metadata:
+      labels:
+        app: klovercloud-ci-light-house-command
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: app
+          imagePullPolicy: Always
+          image: quay.io/klovercloud/light-house-command:v0.0.2
+          resources:
+            limits:
+              cpu: 100m
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          envFrom:
+            - configMapRef:
+                name: klovercloud-ci-light-house-command-config
+            - secretRef:
+                name: klovercloud-mongo-secret
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3

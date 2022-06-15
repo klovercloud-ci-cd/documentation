@@ -255,7 +255,7 @@ if [ "$lightHouseFlag" = "Y" ]; then
     ATTEMPTS=$((attempts + 1))
     sleep 5
   done
-  kubectl aplly -f files/$version/k8s/descriptors/light-house-command-service.yaml
+  kubectl apply -f files/$version/k8s/descriptors/light-house-command-service.yaml
 
   kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-query-configmap.yml
   sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/light-house-query-deployment.yml" \
