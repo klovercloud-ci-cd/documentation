@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: klovercloud-ci-light-house-command-config
+  namespace: klovercloud
+data:
+  RUN_MODE: "PRODUCTION"
+  SERVER_PORT: "8080"
+  MONGO_SERVER: "${mongo_server}"
+  MONGO_PORT: "${mongo_port}"
+  DATABASE: "MONGO"

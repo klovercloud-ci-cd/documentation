@@ -70,6 +70,14 @@ else
   sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/security-server-configmap.yml" \
     >files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
 
+  #editing lightHouseCommand descriptor
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/light-house-command-configmap.yml" \
+    >files/$version/k8s/descriptors/temp/temp-light-house-command-configmap.yml
+
+  #editing lightHouseQuery descriptor
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/light-house-query-configmap.yml" \
+    >files/$version/k8s/descriptors/temp/temp-light-house-query-configmap.yml
+
   kubectl apply -f files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml
 
 fi
@@ -94,6 +102,8 @@ else
   COMPANY_NAME="default"
 fi
 
+echo "Want Light house? [Y/N]"
+read lightHouseFlag
 
 sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e "s|user_email|${USER_EMAIL}|g" -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml >files/$version/k8s/descriptors/temp/temp.yml; mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
 
@@ -228,7 +238,41 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-
 kubectl apply -f files/$version/k8s/descriptors/security-server-service.yaml
+
+if [ "$lightHouseFlag" = "Y" ]; then
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-command-configmap.yml
+  sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/light-house-command-deployment.yml" \
+      >files/$version/k8s/descriptors/temp/temp-light-house-command-deployment.yml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-command-deployment.yml
+  # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
+  ATTEMPTS=0
+  # shellcheck disable=SC2027
+  ROLLOUT_STATUS_CMD="kubectl rollout status deployment/klovercloud-ci-light-house-command -n klovercloud"
+  until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+    $ROLLOUT_STATUS_CMD
+    # shellcheck disable=SC2154
+    ATTEMPTS=$((attempts + 1))
+    sleep 5
+  done
+  kubectl aplly -f files/$version/k8s/descriptors/light-house-command-service.yaml
+
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-query-configmap.yml
+  sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/light-house-query-deployment.yml" \
+     >files/$version/k8s/descriptors/temp/temp-light-house-query-deployment.yml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-query-deployment.yml
+  # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
+  ATTEMPTS=0
+  # shellcheck disable=SC2027
+  ROLLOUT_STATUS_CMD="kubectl rollout status deployment/klovercloud-ci-light-house-query -n klovercloud"
+  until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+    $ROLLOUT_STATUS_CMD
+    # shellcheck disable=SC2154
+    ATTEMPTS=$((attempts + 1))
+    sleep 5
+  done
+  kubectl apply -f files/$version/k8s/descriptors/light-house-query-service.yaml
+fi
+
 
 kubectl get pods -n klovercloud

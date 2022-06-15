@@ -9,9 +9,9 @@ data:
   KLOVERCLOUD_CI_INTEGRATION_MANAGER_URL: "http://klovercloud-integration-manager.klovercloud.svc.cluster.local/api/v1"
   KLOVERCLOUD_CI_EVENT_STORE: "http://klovercloud-ci-event-bank.klovercloud.svc.cluster.local/api/v1"
   KLOVERCLOUD_CI_EVENT_STORE_WS: "ws://klovercloud-ci-event-bank.klovercloud.svc.cluster.local/api/v1"
-
+  LIGHTHOUSE_COMMAND_SERVER_URL: http://klovercloud-ci-light-house-command.klovercloud.svc.cluster.local/api/v1
+  LIGHTHOUSE_QUERY_SERVER_URL: http://klovercloud-ci-light-house-query.klovercloud.svc.cluster.local/api/v1
   PUBLIC_KEY: "-----BEGIN RSA PUBLIC KEY-----\nMIICCgKCAgEA1t9z/Ev9r8LwVVuwd34S0+5i8ngfwVivpZM4TJgyiHW85g5kPoxz\nXPu3XE6OBvclYsAK1Ue0k6ANO04UG/cgSm7PagQyb0Jjw+II4EnshzHeXsLn3ETt\nTZC3LmT3C8MztJhhux+kldvdKJAl9PH7Ltf0CqQ9KYxqa3HZUaBZk99IE9OVekPM\n2xYl+UPolf/E+4UXE4YKSUl6JcZf2nRZYVJGIZSEK9hIwhFotDHELryZSF0S8kJq\nHFlN3AYa8noMZCGO/hM5+SS4MFwCSlMxhcpLdprxVCDotqQnGM0qqX2+y7MtFU9Z\nCEa8BiD+zeBRhzMZCZb1yyraxGQYm26Tagl+eR2NQQPmnhlvKpZn0QjaPznYVmf/\ngSXr9XufJ5q4fcSScGX+y9Es6g1i6jf3559gSgQy3TvaY12Yq0ROf/CJjChJzoyP\nIW3isitC+78vSRmmPB5//6AQjq6Tlqw5/CUDZYqjAvEojvwR3hjlunOSWqvIXPFe\nHXoHs2WNYUrWxtUBy9ABPw+1QOBxwQ7C7MG0XaA/gvV0+hf5SDfwndQ8tob+/eiM\nMJPGQ7Ex/fA6Sro3EQOoR0KrJeaPRdI223gJq0CZ9pZMTPA11dK1KZwoYeBjMbgE\nDNkNIaww49rzr4VJS+g5nBCyQIoulR5mJRyV9C+AU/FNy1OYlOJE7QkCAwEAAQ==\n-----END RSA PUBLIC KEY-----\n"
-
   ENABLE_AUTHENTICATION: "true"
   JAEGER_AGENT_HOST: "localhost"
   JAEGER_SAMPLER_TYPE: "const"
