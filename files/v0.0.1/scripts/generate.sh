@@ -9,7 +9,7 @@ USER_EMAIL=""
 USER_PASSWORD=""
 USER_PHONE=""
 COMPANY_NAME=""
-version=v0.0.1
+version=v0.0.2
 
 kubectl apply -f files/$version/k8s/descriptors/namespace.yaml
 rm -rf files/$version/k8s/descriptors/temp
@@ -24,7 +24,7 @@ if [ "$n" = "Y" ]; then
   rm $TMPFILE
 
   # Create mongodb service with mongod stateful-set
-  # TODO: Temporarily added no-valudate due to k8s 1.8 bug: https://github.com/kubernetes/kubernetes/issues/53309
+  # TODO: Temporarily added no-validate due to k8s 1.8 bug: https://github.com/kubernetes/kubernetes/issues/53309
   kubectl apply -f files/$version/k8s/descriptors/db/mongo/mongo-deploy.yaml --validate=false
   sleep 5
 
@@ -70,6 +70,14 @@ else
   sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/security-server-configmap.yml" \
     >files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
 
+  #editing lightHouseCommand descriptor
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/light-house-command-configmap.yml" \
+    >files/$version/k8s/descriptors/temp/temp-light-house-command-configmap.yml
+
+  #editing lightHouseQuery descriptor
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/light-house-query-configmap.yml" \
+    >files/$version/k8s/descriptors/temp/temp-light-house-query-configmap.yml
+
   kubectl apply -f files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml
 
 fi
@@ -93,6 +101,9 @@ else
   USER_PHONE=""
   COMPANY_NAME="default"
 fi
+
+echo "Want Light house? [Y/N]"
+read lightHouseFlag
 
 
 sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e "s|user_email|${USER_EMAIL}|g" -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml >files/$version/k8s/descriptors/temp/temp.yml; mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
@@ -123,7 +134,9 @@ done
 
 #deploying event bank
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-event-bank-configmap.yaml
-kubectl apply -f files/$version/k8s/descriptors/event-bank-deployment.yaml
+sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/event-bank-deployment.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-event-bank-deployment.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-event-bank-deployment.yaml
 
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
@@ -139,7 +152,9 @@ kubectl apply -f files/$version/k8s/descriptors/event-bank-service.yaml
 
 # deploying api-service
 kubectl apply -f files/$version/k8s/descriptors/api-service-configmap.yaml
-kubectl apply -f files/$version/k8s/descriptors/api-service-deployment.yaml
+sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/api-service-deployment.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-api-service-deployment.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-api-service-deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 ROLLOUT_STATUS_CMD="kubectl rollout status deployment/klovercloud-api-service -n klovercloud"
@@ -153,7 +168,9 @@ kubectl apply -f files/$version/k8s/descriptors/api-service-service.yaml
 
 # deploying klovercloud-ci-integration-manager\
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
-kubectl apply -f files/$version/k8s/descriptors/integration-manager-deployment.yaml
+sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/integration-manager-deployment.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-integration-manager-deployment.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-integration-manager-deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -171,7 +188,9 @@ kubectl apply -f files/$version/k8s/rbac/core-engine-cluster-role.yaml
 kubectl apply -f files/$version/k8s/rbac/core-engine-service-account.yaml
 kubectl apply -f files/$version/k8s/rbac/core-engine-cluster-rolebinding.yaml
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-core-engine-configmap.yaml
-kubectl apply -f files/$version/k8s/descriptors/core-engine-deployment.yaml
+sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/core-engine-deployment.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-core-engine-deployment.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-core-engine-deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -188,8 +207,20 @@ kubectl apply -f files/$version/k8s/descriptors/core-engine-service.yaml
 kubectl apply -f files/$version/k8s/rbac/agent-cluster-role.yaml
 kubectl apply -f files/$version/k8s/rbac/agent-service-account.yaml
 kubectl apply -f files/$version/k8s/rbac/agent-cluster-rolebinding.yaml
-kubectl apply -f files/$version/k8s/descriptors/agent-configmap.yaml
-kubectl apply -f files/$version/k8s/descriptors/agent-deployment.yaml
+if [ "$lightHouseFlag" = "Y" ]; then
+  lighthouseBool="true"
+  sed -e 's@${LIGHTHOUSE_ENABLED}@'"$lighthouseBool"'@g' <"files/$version/k8s/descriptors/agent-configmap.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-agent-configmap.yaml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-agent-configmap.yaml
+else
+  lighthouseBool="false"
+  sed -e 's@${LIGHTHOUSE_ENABLED}@'"$lighthouseBool"'@g' <"files/$version/k8s/descriptors/agent-configmap.yaml" \
+      >files/$version/k8s/descriptors/temp/temp-agent-configmap.yaml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-agent-configmap.yaml
+fi
+sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/agent-deployment.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-agent-deployment.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-agent-deployment.yaml
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
 # shellcheck disable=SC2027
@@ -204,7 +235,9 @@ kubectl apply -f files/$version/k8s/descriptors/agent-service.yaml
 
 # deploying security
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
-kubectl apply -f files/$version/k8s/descriptors/security-server-deployment.yaml
+sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/security-server-deployment.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-security-server-deployment.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-security-server-deployment.yaml
 
 # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
 ATTEMPTS=0
@@ -216,7 +249,41 @@ until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
   ATTEMPTS=$((attempts + 1))
   sleep 5
 done
-
 kubectl apply -f files/$version/k8s/descriptors/security-server-service.yaml
+
+if [ "$lightHouseFlag" = "Y" ]; then
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-command-configmap.yml
+  sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/light-house-command-deployment.yml" \
+      >files/$version/k8s/descriptors/temp/temp-light-house-command-deployment.yml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-command-deployment.yml
+  # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
+  ATTEMPTS=0
+  # shellcheck disable=SC2027
+  ROLLOUT_STATUS_CMD="kubectl rollout status deployment/klovercloud-ci-light-house-command -n klovercloud"
+  until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+    $ROLLOUT_STATUS_CMD
+    # shellcheck disable=SC2154
+    ATTEMPTS=$((attempts + 1))
+    sleep 5
+  done
+  kubectl apply -f files/$version/k8s/descriptors/light-house-command-service.yml
+
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-query-configmap.yml
+  sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/light-house-query-deployment.yml" \
+     >files/$version/k8s/descriptors/temp/temp-light-house-query-deployment.yml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-query-deployment.yml
+  # Check deployment rollout status every 5 seconds (max 5 minutes) until complete.
+  ATTEMPTS=0
+  # shellcheck disable=SC2027
+  ROLLOUT_STATUS_CMD="kubectl rollout status deployment/klovercloud-ci-light-house-query -n klovercloud"
+  until $ROLLOUT_STATUS_CMD || [ $ATTEMPTS -eq 60 ]; do
+    $ROLLOUT_STATUS_CMD
+    # shellcheck disable=SC2154
+    ATTEMPTS=$((attempts + 1))
+    sleep 5
+  done
+  kubectl apply -f files/$version/k8s/descriptors/light-house-query-service.yml
+fi
+
 
 kubectl get pods -n klovercloud

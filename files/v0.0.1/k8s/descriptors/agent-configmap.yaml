@@ -15,7 +15,7 @@ data:
   ENABLE_AUTHENTICATION: "false"
   API_SERVICE_URL: http://klovercloud-api-service.klovercloud.svc.cluster.local/api/v1"
   KAFKA_PUBLISHER_ENABLED: "false"
-  LIGHTHOUSE_ENABLED: "true"
+  LIGHTHOUSE_ENABLED: "${LIGHTHOUSE_ENABLED}"
   TERMINAL_BASE_URL: "http://localhost:8080"
   TERMINAL_API_VERSION: "api/v1"
   ENABLE_OPENTRACING: "true"

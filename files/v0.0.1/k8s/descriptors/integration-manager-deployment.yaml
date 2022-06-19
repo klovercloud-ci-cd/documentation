@@ -17,7 +17,7 @@ spec:
       containers:
         - name: app
           imagePullPolicy: Always
-          image: quay.io/klovercloud/ci-integration-manager:v0.0.1
+          image: quay.io/klovercloud/ci-integration-manager:${version}
           resources:
             limits:
               cpu: 200m
