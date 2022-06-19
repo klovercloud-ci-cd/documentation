@@ -303,4 +303,9 @@ cli logout
 
 #### [External Agent Installation](externalAgent.md)
 
+### To Install ci-console run:
+```azure
+./files/$KLOVERCLOUD_CI_VERSION/scripts/ci-console-generate.sh
+```
+
 ### Welcome to KloverCloud CI/CD. Please feel free to [contribute](https://github.com/klovercloud-ci-cd/core-engine/blob/master/markdownfiles/CONTRIBUTING.md).

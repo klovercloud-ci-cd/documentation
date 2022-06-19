@@ -105,6 +105,7 @@ fi
 echo "Want Light house? [Y/N]"
 read lightHouseFlag
 
+
 sed -e 's@${user_first_name}@'"$USER_FIRST_NAME"'@g' -e 's@${user_last_name}@'"$USER_LAST_NAME"'@g' -e "s|user_email|${USER_EMAIL}|g" -e 's@${user_phone}@'"$USER_PHONE"'@g' -e 's@${user_password}@'"$USER_PASSWORD"'@g' -e 's@${company_name}@'"$COMPANY_NAME"'@g' files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml >files/$version/k8s/descriptors/temp/temp.yml; mv files/$version/k8s/descriptors/temp/temp.yml files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
 
 
@@ -206,7 +207,17 @@ kubectl apply -f files/$version/k8s/descriptors/core-engine-service.yaml
 kubectl apply -f files/$version/k8s/rbac/agent-cluster-role.yaml
 kubectl apply -f files/$version/k8s/rbac/agent-service-account.yaml
 kubectl apply -f files/$version/k8s/rbac/agent-cluster-rolebinding.yaml
-kubectl apply -f files/$version/k8s/descriptors/agent-configmap.yaml
+if [ "$lightHouseFlag" = "Y" ]; then
+  lighthouseBool="true"
+  sed -e 's@${LIGHTHOUSE_ENABLED}@'"$lighthouseBool"'@g' <"files/$version/k8s/descriptors/agent-configmap.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-agent-configmap.yaml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-agent-configmap.yaml
+else
+  lighthouseBool="false"
+  sed -e 's@${LIGHTHOUSE_ENABLED}@'"$lighthouseBool"'@g' <"files/$version/k8s/descriptors/agent-configmap.yaml" \
+      >files/$version/k8s/descriptors/temp/temp-agent-configmap.yaml
+  kubectl apply -f files/$version/k8s/descriptors/temp/temp-agent-configmap.yaml
+fi
 sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/agent-deployment.yaml" \
     >files/$version/k8s/descriptors/temp/temp-agent-deployment.yaml
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-agent-deployment.yaml
@@ -255,7 +266,7 @@ if [ "$lightHouseFlag" = "Y" ]; then
     ATTEMPTS=$((attempts + 1))
     sleep 5
   done
-  kubectl apply -f files/$version/k8s/descriptors/light-house-command-service.yaml
+  kubectl apply -f files/$version/k8s/descriptors/light-house-command-service.yml
 
   kubectl apply -f files/$version/k8s/descriptors/temp/temp-light-house-query-configmap.yml
   sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/light-house-query-deployment.yml" \
@@ -271,7 +282,7 @@ if [ "$lightHouseFlag" = "Y" ]; then
     ATTEMPTS=$((attempts + 1))
     sleep 5
   done
-  kubectl apply -f files/$version/k8s/descriptors/light-house-query-service.yaml
+  kubectl apply -f files/$version/k8s/descriptors/light-house-query-service.yml
 fi
 
 
