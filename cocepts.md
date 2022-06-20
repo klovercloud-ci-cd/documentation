@@ -2,10 +2,10 @@
 
 Pipeline represents a projects integration and delivery flow.
 
-Pipelines comprise:
+Pipelines comprises:
 
-- Jobs, which define what to do. For example, jobs that compile or test code.
-- Stages, which define when to run the jobs. For example, stages that run tests after stages that compile the code.
+- A list of steps.
+- Step - defines what to do. For example, a step that builds image from your code.
 
 ```klovercloud/pipeline/pipeline.yaml``` file contains pipeline configuration.
 
@@ -14,38 +14,36 @@ Pipelines comprise:
 Steps are jobs or tasks with successors that make a Pipeline. Pipeline steps are defined in the pipeline.yaml file. It
 includes the following:
 
-- __Build step:__ - Build step is used to compile source code, build the image and push.<br/><u>Example:</u><br/>
+- __Build step:__ - Build step is used to build images from source code and push into registry.<br/><u>Example:</u><br/>
 
 ```yaml
- - name: build # Name of the stage.
-     type: BUILD # Type of the stage.
-     trigger: AUTO # Trigger of the stage.
-     params: # Parameters of the stage.
-       repository_type: git # Type of the repository.
-       revision: master # Revision of the repository.
-       service_account: test-sa # Service account to use.
-       images: shabrul2451/test-dev,shabrul2451/test-pro # List of images to build.
-       args_from_configmaps: tekton/cm-test # List of configmaps to use as arguments.
-       args: key3:value1,key4:value2 # List of arguments to pass to the stage.
-       storage: 500Mi # Storage to use.
-       access_mode: ReadWriteOnce # Access mode to use.
+ - name: build # Name of the step. This must be unique across the whole pipeline file. 
+     type: BUILD # Type of the step. Case sensitive.
+     trigger: AUTO # Trigger can be Auto or Manual, case sensitive. Trigger Auto means step will run without manual interactions. 
+     params: # Parameters of the step.
+       repository_type: git # Type of the scm.
+       revision: master # Revision/commit id/branch of the repository. If provided, this will be image tag, otherwise commit id will be default.
+       service_account: test-sa # Service account that references source code clone and image push secret.
+       images: zeromsi2/test-dev,zeromsi2/test-pro # List of images to build.
+       args_from_configmaps: tekton/cm-test # Comma separated list of configmaps, convention is namespace/name of configmap. Pass arguments using configmap.
+       args: key3:value1,key4:value2 # Pass argument as key and value pairs.
      next:
-       - interstep # Name of the next stage.
+       - interstep # Name of the next steps.
   ```
 
 - __Intermediary Step:__ - Intermediary step is used to run container.<br/><u>Example:</u><br/>
 
 ```yaml
-  - name: interstep # Name of the stage.
-    type: INTERMEDIARY # Type of the stage.
-    trigger: AUTO # Trigger of the stage.
-    params: # Parameters of the stage.
-      revision: latest # Revision of the repository.
+  - name: interstep # Name of the step. This must be unique across the whole pipeline file.
+    type: INTERMEDIARY # Type of the step. Case sensitive.
+    trigger: AUTO # Trigger can be Auto or Manual, case sensitive. Trigger Auto means step will run without manual interactions. 
+    params: # Parameters of the step.
+      revision: latest # Revision of the image.
       service_account: test-sa # Service account to use.
-      images: ubuntu # Image to use.
-      envs_from_configmaps: tekton/cm-test  # List of configmaps to use as environment variables.
-      envs_from_secrets: tekton/cm-test # List of secrets to use as environment variables.
-      envs: key3:value1,key4:value2 # List of environment variables to pass to the stage.
+      images: ubuntu # Container image to run.
+      envs_from_configmaps: tekton/cm-test  # Comma separated list of configmaps, convention is namespace/name of configmap. Mount environment variables from configmaps.
+      envs_from_secrets: tekton/cm-test  # Comma separated list of secrets, convention is namespace/name of secret. Mount environment variables from secrets.
+      envs: key3:value1,key4:value2 # Mount environment variables as key and value pair.
       command: echo "Hello World" # Command to run.
       command_args: Hello World # Command arguments.
       script: echo "Hello zeromsi" # Script to run.
@@ -71,33 +69,33 @@ data: # Data of the config map.
   Example:</u><br/>
 
 ```yaml
-  - name: deployDev  # Name of the stage.
-    type: DEPLOY  # Type of the stage.
-    trigger: AUTO # Trigger of the stage.
-    params: # Parameters of the stage.
-      agent: local_agent # Agent to use.
-      name: ubuntu # Name of the deployment.
-      namespace: default # Namespace to use.
-      type: deployment # Type of the deployment.
-      revision: master # If the commit is for master branch deploy job will run.
-      trunk_based: enabled # If Enabled, image revision will be commit id.
-      rollout_restart: true # If true, after editing resource, it will rollout restart.
+  - name: deployDev  # Name of the step. This must be unique across the whole pipeline file.
+    type: DEPLOY  #  Type of the step. Case sensitive.
+    trigger: AUTO # Trigger can be Auto or Manual, case sensitive. Trigger Auto means step will run without manual interactions. 
+    params: # Parameters of the step.
+      agent: local_agent # Agent represents your cluster. Every cluster will have at least one agent running. This is the name of the agent.
+      name: ubuntu # Name of the resource.
+      namespace: default # Namespace of the resource.
+      type: deployment # Type of the resource.
+      revision: master # If the commit is for master branch, deploy job will run.
+      trunk_based: enabled # If Enabled, image revision will be replaced by commit id.
+      rollout_restart: true # If true, after updating resource, it will rollout restart.
       env: dev # Environment to use.
-      images: shabrul2451/test-dev  # List of images to use.
+      images: zeromsi2/test-dev  # List of images to use.
     next: # List of next stages.
-      - jenkinsJob
+      - jenkins
 ```
 [N:B] As the environment name is ```dev``` ,all payloads inside ```klovercloud/pipeline/configs/dev.yaml``` file will be applied first.
 
 - __Jenkins Job Step:__ - Jenkins job step is used to run a jenkins job.<br/><u>Example:</u><br/>
 
 ```yaml
- - name: jenkinsjob # Name of the stage.
-     type: JENKINS_JOB # Type of the stage.
-     trigger: AUTO # Trigger of the stage.
+ - name: jenkins # Name of the stage.
+     type: JENKINS_JOB # Type of the step. Case sensitive.
+     trigger: AUTO # Trigger can be Auto or Manual, case sensitive. Trigger Auto means step will run without manual interactions.
      params: # Parameters of the stage.
        url: http://jenkins.default.svc:8080 # URL of the Jenkins server.
-       job: new  # Name of the Jenkins job.
+       job: test_jenkins_job  # Name of the Jenkins job.
        secret: jenkins-credentials   # Name of the secret to use.
        params: id:123,verbosity:high     # List of parameters to pass to the Jenkins job.
      next: null # List of next stages.
@@ -110,59 +108,54 @@ A process is an object of a Pipeline. When a Pipeline is triggered a new Process
 ## Example of a Pipeline:
 
 ```yml
-name: test # Name of the pipeline.
-steps: # List of stages.
-  - name: build # Name of the stage.
-    type: BUILD # Type of the stage.
-    trigger: AUTO # Trigger of the stage.
-    params: # Parameters of the stage.
-      repository_type: git # Type of the repository.
-      revision: master # Revision of the repository.
-      service_account: test-sa # Service account to use.
-      images: shabrul2451/test-dev,shabrul2451/test-pro # List of images to build.
-      args_from_configmaps: tekton/cm-test # List of configmaps to use as arguments.
-      args: key3:value1,key4:value2 # List of arguments to pass to the stage.
-      storage: 500Mi # Storage to use.
-      access_mode: ReadWriteOnce # Access mode to use.
+name: test
+steps:
+  - name: build
+    type: BUILD
+    trigger: AUTO
+    params:
+      repository_type: git
+      revision: master
+      service_account: test-sa
+      images: zeromsi2/test-dev,zeromsi2/test-pro
+      args_from_configmaps: tekton/cm-test
     next:
-      - interstep # Name of the next stage.
-      - jenkinsJob # Name of the next stage.
-  - name: interstep # Name of the stage.
-    type: INTERMEDIARY # Type of the stage.
-    trigger: AUTO # Trigger of the stage.
-    params: # Parameters of the stage.
-      revision: latest # Revision of the repository.
-      service_account: test-sa # Service account to use.
-      images: ubuntu # Image to use.
-      envs_from_configmaps: tekton/cm-test  # List of configmaps to use as environment variables.
-      envs_from_secrets: tekton/cm-test # List of secrets to use as environment variables.
-      envs: key3:value1,key4:value2 # List of environment variables to pass to the stage.
-      command: echo "Hello World" # Command to run.
-      command_args: Hello World # Command arguments.
+      - interstep
+      - jenkins
+  - name: interstep
+    type: INTERMEDIARY
+    trigger: AUTO
+    params:
+      revision: latest
+      service_account: test-sa
+      images: ubuntu
+      envs_from_secrets: tekton/cm-test
+      command: echo "Hello World"
+      command_args: Hello World
     next:
-      - deployDev   # Name of the next stage.
-  - name: deployDev  # Name of the stage.
-    type: DEPLOY  # Type of the stage.
-    trigger: AUTO # Trigger of the stage.
-    params: # Parameters of the stage.
-      agent: local_agent # Agent to use.
-      name: ubuntu # Name of the deployment.
-      namespace: default # Namespace to use.
-      type: deployment # Type of the deployment.
-      revision: master # Revision of the repository.
-      env: dev # Environment to use.
-      images: shabrul2451/test-dev  # List of images to use.
-    next: # List of next stages.
-      - jenkinsJob # Name of the next stage.
-  - name: jenkinsjob # Name of the stage.
-    type: JENKINS_JOB # Type of the stage.
-    trigger: AUTO # Trigger of the stage.
-    params: # Parameters of the stage.
-      url: http://jenkins.default.svc:8080 # URL of the Jenkins server.
-      job: new  # Name of the Jenkins job.
-      secret: jenkins-credentials   # Name of the secret to use.
-      params: id:123,verbosity:high     # List of parameters to pass to the Jenkins job.
-    next: null # List of next stages.
+      - deployDev
+  - name: deployDev
+    type: DEPLOY
+    trigger: AUTO
+    params:
+      agent: local_agent
+      name: ubuntu
+      namespace: default
+      type: deployment
+      revision: master
+      env: dev
+      images: zeromsi2/test-dev
+    next:
+      - jenkins
+  - name: jenkins
+    type: JENKINS_JOB
+    trigger: AUTO
+    params:
+      url: http://jenkins.default.svc:8080
+      job: test_jenkins_job
+      secret: jenkins-credentials
+      params: id:123,verbosity:high
+    next: null
 ```
 
 <br />
