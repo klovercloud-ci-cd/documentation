@@ -27,6 +27,7 @@ includes the following:
        images: zeromsi2/test-dev,zeromsi2/test-pro # List of images to build.
        args_from_configmaps: tekton/cm-test # Comma separated list of configmaps, convention is namespace/name of configmap. Pass arguments using configmap.
        args: key3:value1,key4:value2 # Pass argument as key and value pairs.
+       env: init # name of environment
      next:
        - interstep # Name of the next steps.
   ```
@@ -48,6 +49,7 @@ includes the following:
       command_args: Hello World # Command arguments.
       script: echo "Hello zeromsi" # Script to run.
       script_from_configmap: default/configmap_name # Run Script from configmap
+      env: build # name of environment
     next:
       - deployDev
 ```
@@ -98,6 +100,7 @@ data: # Data of the config map.
        job: test_jenkins_job  # Name of the Jenkins job.
        secret: jenkins-credentials   # Name of the secret to use.
        params: id:123,verbosity:high     # List of parameters to pass to the Jenkins job.
+       env: post # name of environment
      next: null # List of next stages.
 ```
 
@@ -119,9 +122,9 @@ steps:
       service_account: test-sa
       images: zeromsi2/test-dev,zeromsi2/test-pro
       args_from_configmaps: tekton/cm-test
+      env: init
     next:
       - interstep
-      - jenkins
   - name: interstep
     type: INTERMEDIARY
     trigger: AUTO
@@ -132,6 +135,7 @@ steps:
       envs_from_secrets: tekton/cm-test
       command: echo "Hello World"
       command_args: Hello World
+      env: init
     next:
       - deployDev
   - name: deployDev
@@ -155,6 +159,7 @@ steps:
       job: test_jenkins_job
       secret: jenkins-credentials
       params: id:123,verbosity:high
+      env: post
     next: null
 ```
 
