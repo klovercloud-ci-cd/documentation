@@ -166,7 +166,7 @@ steps:
 <br />
 
 <p align="center">
-  <img src="files/images/diagram.png" alt="Material Bread logo">
+  <img src="files/images/pipelineDiagram.png" alt="Material Bread logo">
 </p>
 
 <p align="center">
