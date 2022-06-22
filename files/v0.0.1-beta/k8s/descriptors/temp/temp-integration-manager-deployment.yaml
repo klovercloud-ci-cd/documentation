@@ -1,33 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: klovercloud-ci-light-house-command
+  name: klovercloud-integration-manager
   namespace: klovercloud
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: klovercloud-ci-light-house-command
+      app: klovercloud-integration-manager
   template:
     metadata:
       labels:
-        app: klovercloud-ci-light-house-command
+        app: klovercloud-integration-manager
     spec:
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: 30
       containers:
         - name: app
           imagePullPolicy: Always
-          image: quay.io/klovercloud/ci-light-house-command:${version}
+          image: quay.io/klovercloud/ci-integration-manager:v0.0.1
           resources:
             limits:
-              cpu: 100m
+              cpu: 200m
               memory: 256Mi
             requests:
               cpu: 100m
               memory: 256Mi
           envFrom:
             - configMapRef:
-                name: klovercloud-ci-light-house-command-config
+                name: klovercloud-integration-manager-envar-config
             - secretRef:
                 name: klovercloud-mongo-secret
           ports:
@@ -36,13 +36,11 @@ spec:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /health
               port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 5

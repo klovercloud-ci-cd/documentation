@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: klovercloud-ci-event-bank
+  namespace: klovercloud
+  labels:
+    app: klovercloud-ci-event-bank
+spec:
+  ports:
+    - name: http-rest
+      port: 80
+      targetPort: 8080
+  selector:
+    app: klovercloud-ci-event-bank

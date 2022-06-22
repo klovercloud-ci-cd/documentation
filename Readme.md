@@ -13,7 +13,7 @@ git clone https://github.com/klovercloud-ci-cd/documentation.git
 Set required version:
 
 ```couchbasequery
-export KLOVERCLOUD_CI_VERSION=v0.0.1
+export KLOVERCLOUD_CI_VERSION=v0.0.1-beta
 ```
 
 Install klovercloud-ci:

@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: klovercloud-ci-light-house-command
+  name: klovercloud-ci-event-bank
   namespace: klovercloud
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: klovercloud-ci-light-house-command
+      app: klovercloud-ci-event-bank
   template:
     metadata:
       labels:
-        app: klovercloud-ci-light-house-command
+        app: klovercloud-ci-event-bank
     spec:
       terminationGracePeriodSeconds: 60
       containers:
         - name: app
           imagePullPolicy: Always
-          image: quay.io/klovercloud/ci-light-house-command:${version}
+          image: quay.io/klovercloud/ci-event-bank:${version}
           resources:
             limits:
               cpu: 100m
@@ -27,7 +27,7 @@ spec:
               memory: 256Mi
           envFrom:
             - configMapRef:
-                name: klovercloud-ci-light-house-command-config
+                name: klovercloud-ci-event-bank-envar-config
             - secretRef:
                 name: klovercloud-mongo-secret
           ports:
