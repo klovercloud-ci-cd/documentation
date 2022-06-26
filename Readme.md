@@ -9,6 +9,7 @@ Clone:
 ```couchbasequery
 git clone https://github.com/klovercloud-ci-cd/documentation.git
 ```
+[N:B:] Security project needs rsa key pair.To generate rsa key pair please follow the <a href="https://travistidwell.com/jsencrypt/demo/">link</a>. We recommend 512 key size.
 
 Set required version:
 

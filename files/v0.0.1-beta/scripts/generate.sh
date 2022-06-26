@@ -9,6 +9,11 @@ USER_EMAIL=""
 USER_PASSWORD=""
 USER_PHONE=""
 COMPANY_NAME=""
+PUBLIC_KEY=""
+PRIVATE_KEY=""
+PUBLIC_KEY_FOR_INTERNAL_CALL=""
+PRIVATE_KEY_FOR_INTERNAL_CALL=""
+
 version=v0.0.1-beta
 
 kubectl apply -f files/$version/k8s/descriptors/namespace.yaml
@@ -48,6 +53,10 @@ else
   read -p "Enter mongo port:" mongo_port
   read -p "Enter your mongo username:" mongo_username
   read -s -p "Enter your password: " mongo_password
+  read -s -p "Enter rsa public key: " PUBLIC_KEY
+  read -s -p "Enter rsa private key: " PRIVATE_KEY
+  read -s -p "Enter rsa public key for internal call: " PUBLIC_KEY_FOR_INTERNAL_CALL
+  read -s -p "Enter rsa private key for internal call: " PRIVATE_KEY_FOR_INTERNAL_CALL
   echo "/n"
 
   # editing mongo-secret.yaml
@@ -55,20 +64,24 @@ else
     >files/$version/k8s/descriptors/temp/temp-mongo-secret.yaml
 
   # editing event-bank descriptor
-  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/event-bank-configmap.yaml" \
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' -e 's@${PUBLIC_KEY}@'"$PUBLIC_KEY"'@g' <"files/$version/k8s/descriptors/event-bank-configmap.yaml" \
     >files/$version/k8s/descriptors/temp/temp-event-bank-configmap.yaml
 
   # editing klovercloud-ci-integration-manager descriptor
-  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/integration-manager-configmap.yaml" \
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' -e 's@${PUBLIC_KEY}@'"$PUBLIC_KEY"'@g' <"files/$version/k8s/descriptors/integration-manager-configmap.yaml" \
     >files/$version/k8s/descriptors/temp/temp-integration-manager-configmap.yaml
 
   # editing core-engine descriptor
-  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/core-engine-configmap.yaml" \
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' -e 's@${PUBLIC_KEY}@'"$PUBLIC_KEY"'@g' <"files/$version/k8s/descriptors/core-engine-configmap.yaml" \
     >files/$version/k8s/descriptors/temp/temp-core-engine-configmap.yaml
 
   #editing security descriptor
-  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/security-server-configmap.yml" \
+  sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' -e 's@${PUBLIC_KEY}@'"$PUBLIC_KEY"'@g' -e 's@${PRIVATE_KEY}@'"$PRIVATE_KEY"'@g' <"files/$version/k8s/descriptors/security-server-configmap.yml" \
     >files/$version/k8s/descriptors/temp/temp-security-server-configmap.yml
+
+  #editing api-service descriptor
+  sed -e 's@${PUBLIC_KEY_FOR_INTERNAL_CALL}@'"$PUBLIC_KEY_FOR_INTERNAL_CALL"'@g' -e 's@${PRIVATE_KEY_FOR_INTERNAL_CALL}@'"$PRIVATE_KEY_FOR_INTERNAL_CALL"'@g' -e 's@${PUBLIC_KEY}@'"$PUBLIC_KEY"'@g' <"files/$version/k8s/descriptors/api-service-configmap.yaml" \
+    >files/$version/k8s/descriptors/temp/temp-api-service-configmap.yaml
 
   #editing lightHouseCommand descriptor
   sed -e 's@${mongo_server}@'"$mongo_server"'@g' -e 's@${mongo_port}@'"$mongo_port"'@g' <"files/$version/k8s/descriptors/light-house-command-configmap.yml" \
@@ -151,7 +164,7 @@ done
 kubectl apply -f files/$version/k8s/descriptors/event-bank-service.yaml
 
 # deploying api-service
-kubectl apply -f files/$version/k8s/descriptors/api-service-configmap.yaml
+kubectl apply -f files/$version/k8s/descriptors/temp/temp-api-service-configmap.yaml
 sed -e 's@${version}@'"$version"'@g' -e 's@${version}@'"$version"'@g' <"files/$version/k8s/descriptors/api-service-deployment.yaml" \
     >files/$version/k8s/descriptors/temp/temp-api-service-deployment.yaml
 kubectl apply -f files/$version/k8s/descriptors/temp/temp-api-service-deployment.yaml
