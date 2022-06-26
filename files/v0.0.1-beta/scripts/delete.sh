@@ -1,5 +1,5 @@
 #!/bin/sh
-version=v0.0.1
+version=v0.0.1-beta
 kubectl delete statefulsets mongod -n klovercloud
 kubectl delete services mongodb-service -n klovercloud
 sleep 5

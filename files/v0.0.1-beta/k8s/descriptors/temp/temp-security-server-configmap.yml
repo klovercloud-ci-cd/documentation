@@ -25,7 +25,7 @@ data:
   APPLICATION_CREATION_ENABLED: "true"
   INTEGRATION_MANAGER_URL: "http://klovercloud-integration-manager.klovercloud.svc.cluster.local/api/v1"
   USER_FIRST_NAME: "shabrul"
-  USER_LAST_NAME: "islam"
+  USER_LAST_NAME: "Islam"
   USER_EMAIL: "shabrul2451@gmail.com"
   USER_PHONE: "01521339629"
   USER_AUTH_TYPE: "password"

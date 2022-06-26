@@ -1,7 +1,7 @@
 read -p "Enter your public api service base url:" apiServiceUrl
 read -p "Enter your public Security service base url:" securityUrl
 read -p "Enter your public webHook events service base url:" webhookEventUrl
-version=v0.0.2
+version=v0.0.1-beta
 
 sed -e 's@${apiServiceUrl}@'"$apiServiceUrl"'@g' -e 's@${securityUrl}@'"$securityUrl"'@g' -e 's@${webhookEventUrl}@'"$webhookEventUrl"'@g' <"files/$version/k8s/descriptors/ci-console-descriptor.yml" \
   >files/$version/k8s/descriptors/temp/temp-ci-console-descriptor.yml
