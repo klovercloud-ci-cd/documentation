@@ -30,3 +30,7 @@ A schedular will trigger jobs according to predefined instructions.
 ### Event introduction 
 
 Event from intermediary steps container will introduce new way of automation. 
+
+### Operator 
+
+Operator will make installation easier. 
