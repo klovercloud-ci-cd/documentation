@@ -10,17 +10,20 @@ It will add observability.
 
 After Light house integration, conatiners terminal access from web-console will be introduced.
 
-## Registry webhook with CD flow
-
-Registry webhook will introduced CD follow with klovercloudCD.
 
 
 # KlovercloudCD v0.0.2 Roadmap
 
+## Registry webhook with CD flow
+
+Registry webhook will introduced CD follow with klovercloudCD.
 
 ## Schedular 
 
 A schedular will trigger jobs according to predefined instructions. 
+
+
+# KlovercloudCD v0.0.3 Roadmap
 
 ## Event introduction 
 
