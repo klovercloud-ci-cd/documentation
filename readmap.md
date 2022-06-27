@@ -1,6 +1,6 @@
-# KlovercloudCD v0.1.0 Roadmap
+# Roadmap :: v0.1.0
 
-## KlovercloudCD v0.0.1
+## v0.0.1
 
 
 ### Light house integration 
@@ -14,7 +14,7 @@ After Light house integration, conatiners terminal access from web-console will 
 
 
 
-## KlovercloudCD v0.0.2 Roadmap
+## v0.0.2
 
 ### Registry webhook with CD flow
 
@@ -25,7 +25,7 @@ Registry webhook will introduced CD follow with klovercloudCD.
 A schedular will trigger jobs according to predefined instructions. 
 
 
-## KlovercloudCD v0.0.3 Roadmap
+## v0.0.3
 
 ### Event introduction 
 
