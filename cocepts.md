@@ -22,12 +22,13 @@ includes the following:
      trigger: AUTO # Trigger can be Auto or Manual, case sensitive. Trigger Auto means step will run without manual interactions. 
      params: # Parameters of the step.
        repository_type: git # Type of the scm.
-       revision: master # Revision/commit id/branch of the repository. If provided, this will be image tag, otherwise commit id will be default.
+       revision: master # Revision/commit id/branch of the repository. If provided, this will be image tag, otherwise commit id will be default. $BRANCH as variable will replace revision by branch name.
        service_account: test-sa # Service account that references source code clone and image push secret.
        images: zeromsi2/test-dev,zeromsi2/test-pro # List of images to build.
        args_from_configmaps: tekton/cm-test # Comma separated list of configmaps, convention is namespace/name of configmap. Pass arguments using configmap.
        args: key3:value1,key4:value2 # Pass argument as key and value pairs.
        env: init # name of environment
+       allowed_branches: dev,master # If commits are not from these branches, pipeline won't get triggered.
      next:
        - interstep # Name of the next steps.
   ```
