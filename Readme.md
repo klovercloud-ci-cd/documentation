@@ -2,7 +2,7 @@
 
 ## [Core Concepts](cocepts.md)
 
-## [Roadmap](readmap.md)
+## [Roadmap](roadmap.md)
 
 ## Installation guide
 
