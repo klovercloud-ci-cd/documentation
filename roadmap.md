@@ -10,7 +10,7 @@ It will add observability.
 
 ### Terminal Access 
 
-After Light house integration, conatiners terminal access from web-console will be introduced.
+After light house integration, conatiners terminal access from web-console will be introduced.
 
 
 
@@ -18,7 +18,7 @@ After Light house integration, conatiners terminal access from web-console will 
 
 ### Registry webhook with CD flow
 
-Registry webhook will introduced CD follow with klovercloudCD.
+Registry webhook will introduce CD follow with klovercloudCD.
 
 ### Schedular 
 
