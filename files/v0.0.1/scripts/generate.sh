@@ -9,7 +9,7 @@ USER_EMAIL=""
 USER_PASSWORD=""
 USER_PHONE=""
 COMPANY_NAME=""
-version=v0.0.2
+version=v0.0.1
 
 kubectl apply -f files/$version/k8s/descriptors/namespace.yaml
 rm -rf files/$version/k8s/descriptors/temp
