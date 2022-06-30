@@ -19,7 +19,7 @@ data:
   #  MAIL_SERVER_HOST_EMAIL_SECRET:
   SMTP_HOST: "smtp.gmail.com"
   SMTP_PORT: "587"
-  RESOURCES: "user,pipeline,process,company,repository,application"
+  RESOURCES: "user,pipeline,process,company,repository,application,role,permission"
   PERMISSIONS: "CREATE,READ,UPDATE,DELETE"
   API_SERVER_URL: "http://klovercloud-api-service.klovercloud.svc.cluster.local/api/v1"
   APPLICATION_CREATION_ENABLED: "true"
