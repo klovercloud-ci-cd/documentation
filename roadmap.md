@@ -12,6 +12,9 @@ It will add observability.
 
 After light house integration, conatiners terminal access from web-console will be introduced.
 
+### Operator 
+
+Operator will make installation easier. 
 
 
 ## v0.0.2
@@ -30,7 +33,3 @@ A schedular will trigger jobs according to predefined instructions.
 ### Event introduction 
 
 Event from intermediary steps container will introduce new way of automation. 
-
-### Operator 
-
-Operator will make installation easier. 
