@@ -4,89 +4,33 @@
 
 ## [Roadmap](roadmap.md)
 
-## Installation guide
-
-Clone:
-
-```couchbasequery
-git clone https://github.com/klovercloud-ci-cd/documentation.git
-```
-[N:B:] Security project needs rsa key pair.To generate rsa key pair please follow the <a href="https://travistidwell.com/jsencrypt/demo/">link</a>. We recommend 512 key size.
-
-Install klovercloud-ci:
+## Installation guide: 
 #### Available versions:
 | Versions | Kubernetes  |
 |----------|-------------|
 | v0.0.1-beta | v1.22.2   |
 
-Incase of minikube:
+#### Incase of minikube:
 ```shell
-minikube start --kubernetes-version=<available version>
+minikube start --kubernetes-version=<supported kubernetes version>
+
+// For example minikube start --kubernetes-version=v1.22.2
 ```
 
-Set required version:
 
-```shell
-export KLOVERCLOUD_CI_VERSION=<klovercloudCd version>
-```
+#### [Install with Operator](https://github.com/klovercloud-ci-cd/klovercloudcd-operator/blob/master/README.md)
 
-```shell
-./files/$KLOVERCLOUD_CI_VERSION/scripts/generate.sh
-```
-
-It will ask for local database.If no then provide mongo server url and port.
-
-```Example:
-Enter mongo server:"loaclhost"
-Enter mongo port:"27017"
-```
-
-Database username and password.
-
-```Example:
-Enter your mongo username:"username"
-Enter your mongo password:"password"
-```
-
-Check pods statues:
-
-```couchbasequery
-kubectl get pods -n klovercloud
-```
-
-Example of a successful installation:
-
-![context](files/images/deployStatusExample.png)
-
-Note: ```api-server``` Listens ```.git``` webhook events. In case of local installation, ```api-server``` host and port
-need to be accessible from ```.git```. To accomplish this, you can use [ngrok](https://ngrok.com/) or any of the
-compatible tools.
-
-Incase of ```ngrok```, please follow [this](ngrok.md) steps first.
-
-Forward security service:
-
-```couchbasequery
-kubectl port-forward --address yourIP svc/klovercloud-security 4000:80 -n klovercloud
-```
-
-Run the following command:
-
-```couchbasequery
-./files/$KLOVERCLOUD_CI_VERSION/scripts/refactor.sh
-```
-
-Note: Forwarded api-service url will be asked. It will replace the ```.git``` url with accessable api-service url.
+Alternatively, By applying [descriptors](files) , platform can be installed. In that case, user must replace variables with appropriate value manually.
 
 ## Getting started
 
-[This](https://github.com/klovercloud-ci-cd/test-app) is the example we are following. Fork this repository.
+[This](https://github.com/klovercloud-ci-cd/test-app) is the example, we are following. Fork this repository or create a repository following constraints (directory where pipeline file should exist).
 
 Service account is attached with
 this [pipeline](https://github.com/klovercloud-ci-cd/test-app/blob/master/klovercloud/pipeline/pipeline.yaml). Service
 account contains two secrets; one for repository and one for registry.
 
-Registry secret example:
+#### Registry secret example:
 
 ```yaml
 apiVersion: v1
@@ -102,7 +46,7 @@ metadata:
 type: kubernetes.io/basic-auth
 ```
 
-Repository secret example:
+#### Repository secret example:
 
 ```yaml
 apiVersion: v1
@@ -118,7 +62,7 @@ metadata:
 type: kubernetes.io/basic-auth
 ```
 
-Service account example:
+#### Service account example:
 
 ```yaml
 apiVersion: v1
@@ -130,35 +74,27 @@ secrets:
   - name: image-sec
   - name: repo-sec
 ```
+## Install cli
 
-Set env:
-
-- Linux:
+#### Linux:
 
 ```couchbasequery
 cd ~/
 mkdir klovercloud
 ```
-
-Export:
-
-Edit ```bashrc``` file
-
 ```couchbasequery
 vi ~/.bashrc
 ```
-
 Add the following line and save
 ```couchbasequery
 export KCPATH=$HOME/klovercloud/
 ```
 
-Source bashrc file
 ```couchbasequery
 source ~/.bashrc
 ```
 
-- Windows:
+#### Windows:
   Create klovercloud directory inside c drive
 
 ```couchbasequery
@@ -313,11 +249,7 @@ cli logout
 
 <br/>
 
-#### [External Agent Installation](externalAgent.md)
+#### [External Agent Installation](https://github.com/klovercloud-ci-cd/klovercloudcd-operator#create-external-agent)
 
-### To Install ci-console run:
-```azure
-./files/$KLOVERCLOUD_CI_VERSION/scripts/ci-console-generate.sh
-```
 
 ### Welcome to KloverCloud CI/CD. Please feel free to [contribute](https://github.com/klovercloud-ci-cd/core-engine/blob/master/markdownfiles/CONTRIBUTING.md).
