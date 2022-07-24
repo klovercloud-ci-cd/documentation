@@ -13,15 +13,24 @@ git clone https://github.com/klovercloud-ci-cd/documentation.git
 ```
 [N:B:] Security project needs rsa key pair.To generate rsa key pair please follow the <a href="https://travistidwell.com/jsencrypt/demo/">link</a>. We recommend 512 key size.
 
-Set required version:
+Install klovercloud-ci:
+#### Available versions:
+| Versions | Kubernetes  |
+|----------|-------------|
+| v0.0.1-beta | v1.22.2   |
 
-```couchbasequery
-export KLOVERCLOUD_CI_VERSION=v0.0.1-beta
+Incase of minikube:
+```shell
+minikube start --kubernetes-version=<available version>
 ```
 
-Install klovercloud-ci:
+Set required version:
 
-```couchbasequery
+```shell
+export KLOVERCLOUD_CI_VERSION=<klovercloudCd version>
+```
+
+```shell
 ./files/$KLOVERCLOUD_CI_VERSION/scripts/generate.sh
 ```
 
