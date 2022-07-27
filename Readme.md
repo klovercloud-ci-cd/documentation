@@ -2,6 +2,8 @@
 
 ## [Core Concepts](cocepts.md)
 
+## [Lighthouse Concept](lighhouse-concept.md)
+
 ## [Roadmap](roadmap.md)
 
 ## Installation guide: 

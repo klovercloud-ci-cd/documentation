@@ -8,4 +8,5 @@ data:
   SERVER_PORT: "8080"
   MONGO_SERVER: "${mongo_server}"
   MONGO_PORT: "${mongo_port}"
+  DATABASE_NAME: "klovercloudcd-lighthouse"
   DATABASE: "MONGO"
