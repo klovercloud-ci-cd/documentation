@@ -8,16 +8,16 @@
 Light house is a distributed k8s object management tool. There are two projects [query](https://github.com/klovercloud-ci-cd/light-house-query), [command](https://github.com/klovercloud-ci-cd/light-house-command) under construction along with [agent](https://github.com/klovercloud-ci-cd/agent) under this tool.
 It will add observability.
 
-### Terminal Access 
-
-After light house integration, conatiners terminal access from web-console will be introduced.
-
 ### Operator 
 
 Operator will make installation easier. 
 
 
 ## v0.0.2
+
+### Terminal Access 
+
+After light house integration, conatiners terminal access from web-console will be introduced.
 
 ### Registry webhook with CD flow
 
