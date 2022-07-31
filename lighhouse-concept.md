@@ -1,6 +1,6 @@
 ## Overview
 
-Lighthouse is a tool for managing kubernetes objects. Agents listen kube events and send objects data to lighthouse command. Lighthouse query provides app's to read kubernetes objects and events.
+Lighthouse is a tool for managing kubernetes objects. Agents listen kube events and send objects data to lighthouse command. Lighthouse query provides api's to read kubernetes objects and events.
 
 Lighthouse comprises -
 - Lighthouse command
