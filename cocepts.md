@@ -29,6 +29,7 @@ includes the following:
        args: key3:value1,key4:value2 # Pass argument as key and value pairs.
        env: init # name of environment
        allowed_branches: dev,master # If commits are not from these branches, pipeline won't get triggered.
+       dockerfile_path: "" # Dockerfile path from base directory of the project.
      next:
        - interstep # Name of the next steps.
   ```
