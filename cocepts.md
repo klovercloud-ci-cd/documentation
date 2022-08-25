@@ -114,6 +114,8 @@ A process is an object of a Pipeline. When a Pipeline is triggered a new Process
 
 ```yml
 name: test
+_metadata:
+    allowed_branches: dev,master
 steps:
   - name: build
     type: BUILD
