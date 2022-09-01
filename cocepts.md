@@ -69,7 +69,7 @@ data: # Data of the config map.
     curl www.google.com
 ```
 
- #### [Intermediary steps for automation](usecases.md)
+ #### [Intermediary steps usecases](usecases.md)
 
 - __Deployment Step:__ - Deployment step is used to deploy the descriptors and modify kubernetes work loads.<br/><u>
   Example:</u><br/>
